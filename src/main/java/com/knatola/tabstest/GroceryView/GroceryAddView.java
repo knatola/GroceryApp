@@ -1,13 +1,9 @@
 package com.knatola.tabstest.GroceryView;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -18,10 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.knatola.tabstest.GroceryView.CustomAdapter;
+import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.MainActivity;
 import com.knatola.tabstest.R;
-import com.knatola.tabstest.GroceryView.GroceryItem;
+import com.knatola.tabstest.Data.GroceryItem;
 
 import java.util.ArrayList;
 
@@ -41,12 +37,15 @@ public class GroceryAddView extends AppCompatActivity {
     PagerAdapter pagerAdapter;
     ViewPager viewPager;
     //private Context context = this.getApplicationContext();
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_view);
-
+        db = new DatabaseHelper(getApplicationContext());
+        Bundle bundle = getIntent().getExtras();
+        groceryListName = bundle.getString("name");
 
         addButton = (Button) findViewById(R.id.addButton);
         removeButton = (Button) findViewById(R.id.removeButton);
@@ -65,18 +64,26 @@ public class GroceryAddView extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddItem();
+                final String name = editName.getText().toString();
+                final String price = editPrice.getText().toString();
+                final String amount = editAmount.getText().toString();
+                GroceryItem item = new GroceryItem(name, price, amount);
+                item.setGroceryListName(groceryListName);
+                AddItem(item);
+                db.createGrocery(item);
+                db.closeDB();
             }
         });
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lista.size() > 0){
-                    for (int i = 0; i < lista.size(); i++){
-                        if (i > lista.size()){
+                if (lista.size() > 0) {
+                    for (int i = 0; i < lista.size(); i++) {
+                        if (i > lista.size()) {
                             break;
-                        }if (lista.get(i).isChecked()){
+                        }
+                        if (lista.get(i).isChecked()) {
                             lista.remove(i);
                             adapter.notifyDataSetChanged();
                             continue;
@@ -90,18 +97,21 @@ public class GroceryAddView extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(GroceryAddView.this);
+                onBackPressed();
+                //Intent backToMain = new Intent(GroceryAddView.this, MainActivity.class);
+                //startActivity(backToMain);
+
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(GroceryAddView.this);
                 builder.setTitle("Save your list");
                 builder.setMessage("Give a name for your list.");
                 final EditText et = new EditText(GroceryAddView.this);
                 et.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(et);
 
-                //Buttons for the pop-up
+
                 builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //if name field is empty pop-up alert
                         if(et.getText().toString().equals("")){
                             AlertDialog.Builder builder1 = new AlertDialog.Builder(GroceryAddView.this);
                             builder1.setTitle("Error");
@@ -137,20 +147,13 @@ public class GroceryAddView extends AppCompatActivity {
                 });
 
                 builder.show();
+            }*/
             }
         });
     }
 
-    //Handling backButton press
-    @Override
-    public void onBackPressed() {
-        finish();
-        Intent backIntent = new Intent(GroceryAddView.this, MainActivity.class);
-        startActivity(backIntent);
-    }
-
     //Method containing the logic for handling the groceryItem adding to listview
-    public void AddItem(){
+    /*public void AddItem(){
 
         if (editName.getText().toString().equals("") || editAmount.getText().toString().equals("") ||
                 editPrice.getText().toString().equals("")) {
@@ -179,5 +182,39 @@ public class GroceryAddView extends AppCompatActivity {
             editName.requestFocus();
         }
 
+    }*/
+    public void AddItem(GroceryItem item){
+
+        if (item.getName().equals("") || item.getAmount().equals("") ||
+                item.getPrice().equals("")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(GroceryAddView.this);
+            builder.setTitle("Error: information missing.");
+            builder.setMessage("Please add more information...");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            builder.show();
+
+        }else{
+            lista.add(0, item);
+            adapter.notifyDataSetChanged();
+            editName.setText("");
+            editPrice.setText("");
+            editAmount.setText("");
+            editName.requestFocus();
+        }
+
+    }
+
+    //Handling backButton press
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent backIntent = new Intent(GroceryAddView.this, MainActivity.class);
+        startActivity(backIntent);
     }
 }

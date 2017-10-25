@@ -1,9 +1,11 @@
 package com.knatola.tabstest;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -12,17 +14,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.EditText;
 
-import android.widget.TextView;
-
+import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.Fridge.FridgeViewFragment;
 import com.knatola.tabstest.GroceryView.GroceryAddView;
-import com.knatola.tabstest.GroceryView.GroceryList;
+import com.knatola.tabstest.Data.GroceryList;
 import com.knatola.tabstest.GroceryView.GroceryListView;
 import com.knatola.tabstest.GroceryView.GroceryListsAdapter;
 
@@ -30,29 +32,21 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private boolean isGroceryListViewOn = false;
     GroceryListsAdapter listsAdapter;
     private ArrayList<GroceryList> groceryListslist;
     private String groceryListName;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHelper(getApplicationContext());
 
         android.app.FragmentManager fm = getFragmentManager();
 
@@ -82,8 +76,55 @@ public class MainActivity extends AppCompatActivity {
                      //   .setAction("Action", null).show();
                 //Fragment page = getSupportFragmentManager().findFragmentById(mViewPager.getCurrentItem());
                 if(mViewPager.getCurrentItem() == 1) {
-                    Intent groceryAddIntent = new Intent(MainActivity.this, GroceryAddView.class);
-                    startActivity(groceryAddIntent);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Create a new list");
+                    builder.setMessage("Give a name for your grocery list.");
+                    final EditText et = new EditText(MainActivity.this);
+                    et.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(et);
+
+                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //if the field is empty, prompt an error
+                            if (et.getText().toString().equals("")) {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                                builder1.setTitle("Error");
+                                builder1.setMessage("Give a name.");
+                                builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+
+                                builder1.show();
+
+                            } else {
+                                // if the field isn't empty move the name to MainActivity
+                                // and start the activity.
+                                final String groceryListName = et.getText().toString();
+                                //GroceryList newList = new GroceryList(groceryListName);
+                                Intent groceryAddIntent = new Intent(MainActivity.this, GroceryAddView.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("name", groceryListName);
+                                groceryAddIntent.putExtras(bundle);
+                                startActivity(groceryAddIntent);
+                                GroceryList newList = new GroceryList(groceryListName);
+                                db.createGrocery_List(newList);
+                                db.closeDB();
+
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
+
                 }else {
                     Snackbar.make(view, "This is FridgeView", Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();

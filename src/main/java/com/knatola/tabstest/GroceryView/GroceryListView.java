@@ -6,9 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.knatola.tabstest.MainActivity;
+import com.knatola.tabstest.Data.GroceryList;
 import com.knatola.tabstest.R;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class GroceryListView extends Fragment {
             groceryListslist = new ArrayList<>();
 
 
-            //Initialization
+
             listsAdapter = new GroceryListsAdapter(getActivity(), R.layout.grocerylists_list_row, groceryListslist);
             groceryListsView = rootView.findViewById(R.id.groceryLists);
             groceryListsView.setAdapter(listsAdapter);

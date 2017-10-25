@@ -1,4 +1,4 @@
-package com.knatola.tabstest.GroceryView;
+package com.knatola.tabstest.Data;
 
 /**
  * Created by knatola on 9.10.2017.
@@ -12,6 +12,18 @@ public class GroceryItem {
     private String price = "";
     private String amount = "";
     private boolean isChecked;
+    private GroceryList list;
+    private int id;
+    private String groceryListName;
+
+    public GroceryItem(){}
+
+    public GroceryItem(String name, String price, String amount, int id){
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
+        this.id = id;
+    }
 
     public GroceryItem(String name, String price, String amount){
         this.name = name;
@@ -19,9 +31,31 @@ public class GroceryItem {
         this.amount = amount;
     }
 
+    public GroceryItem(String name, String price, String amount, GroceryList list){
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
+        this.list = list;
+    }
+
+
     /*
     *Default generated getters/setters
      */
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setGroceryListName(String groceryListName) {
+        this.groceryListName = groceryListName;
+    }
+
+    public String getGroceryListName(){ return list.getName();}
 
     public String getName() {
         return name;

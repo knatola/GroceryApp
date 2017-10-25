@@ -1,4 +1,6 @@
-package com.knatola.tabstest.GroceryView;
+package com.knatola.tabstest.Data;
+
+import com.knatola.tabstest.Data.GroceryItem;
 
 import java.util.ArrayList;
 
@@ -10,6 +12,8 @@ public class GroceryList {
     private ArrayList<GroceryItem> listOfGroceries;
     private String name;
     private boolean isChecked;
+
+    public GroceryList(){}
 
     public GroceryList(String name){
         this.name = name;

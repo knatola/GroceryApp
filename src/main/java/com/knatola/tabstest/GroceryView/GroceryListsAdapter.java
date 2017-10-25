@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.knatola.tabstest.Data.GroceryList;
 import com.knatola.tabstest.R;
 
 import java.util.ArrayList;

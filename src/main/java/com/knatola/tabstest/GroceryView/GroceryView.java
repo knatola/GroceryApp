@@ -1,9 +1,7 @@
 package com.knatola.tabstest.GroceryView;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -16,12 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.knatola.tabstest.MainActivity;
+import com.knatola.tabstest.Data.GroceryItem;
 import com.knatola.tabstest.R;
 
 import java.util.ArrayList;
-
-import static android.R.attr.fragment;
 
 /**
  * Created by knatola on 9.10.2017.
