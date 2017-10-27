@@ -9,23 +9,17 @@ import java.util.ArrayList;
  */
 
 public class GroceryList {
-    private ArrayList<GroceryItem> listOfGroceries;
-    private String name;
-    private boolean isChecked;
 
-    public GroceryList(){}
+    private String name = "";
+    private boolean isChecked;
 
     public GroceryList(String name){
         this.name = name;
-        //this.listOfGroceries = listOfGroceries;
     }
 
-    public ArrayList<GroceryItem> getListOfGroceries() {
-        return listOfGroceries;
-    }
-
-    public void setListOfGroceries(ArrayList<GroceryItem> listOfGroceries) {
-        this.listOfGroceries = listOfGroceries;
+    public int getIntBool(){
+        int bool = (this.isChecked()) ? 1 : 0;
+        return bool;
     }
 
     public String getName() {
@@ -40,7 +34,7 @@ public class GroceryList {
         return isChecked;
     }
 
-    public void setChecked(boolean checked) {
+    public void setIsChecked(boolean checked) {
         this.isChecked = checked;
     }
 }

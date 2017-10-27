@@ -19,6 +19,7 @@ import java.util.ArrayList;
  */
 
 public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
+
     private Activity context;
     private int id;
     ArrayList<GroceryList> lists;
@@ -41,22 +42,16 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
         TextView listName = (TextView) convertView.findViewById(R.id.groceryListName);
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.listCheckBox);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                groceryList.setChecked(b);
+                groceryList.setIsChecked(b);
             }
         });
 
-        listName.setText("Name: "+ groceryList.getName());
+        listName.setText(groceryList.getName());
         checkBox.setChecked(groceryList.isChecked());
 
         return convertView;
     }
-
-    @Override
-    public int getCount() {
-        return lists.size();
-    }
-
 }
+

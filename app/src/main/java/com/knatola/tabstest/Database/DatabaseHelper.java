@@ -13,8 +13,10 @@ import com.knatola.tabstest.Data.GroceryList;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by knatola on 24.10.2017.
@@ -24,7 +26,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String LOG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TAG ="Database";
 
     public static final String DATABASE_NAME = "groceries.db";
@@ -40,13 +42,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String GROCERY_AMOUNT = "amount";
     private static final String GROCERY_PRICE = "price";
     private static final String GROCERY_ITEM_LIST_NAME = "list";
+    private static final String GROCERY_ISCHECKED = "is_checked";
 
     //grocery_list table column names
     private static final String GROCERY_LIST_NAME = "grocery_list_name";
 
-    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 
     public DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -72,13 +72,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Table create statements
     // Groceries table statement
     private static final String CREATE_TABLE_GROCERIES = "CREATE TABLE " + TABLE_GROCERIES
-            + "(" + KEY_ID + " INTEGER PRIMARY KEY," + GROCERY_NAME + " TEXT," + GROCERY_AMOUNT
-            + " TEXT," + GROCERY_PRICE + " TEXT," + GROCERY_ITEM_LIST_NAME + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + GROCERY_NAME + " TEXT," + GROCERY_AMOUNT
+            + " TEXT," + GROCERY_PRICE + " TEXT," + GROCERY_ITEM_LIST_NAME + " TEXT," + GROCERY_ISCHECKED
+            + " INTEGER," + KEY_CREATED_AT
+            + " DATETIME" + ");";
 
     private static final String CREATE_TABLE_GROCERY_LIST = "CREATE TABLE " + TABLE_GROCERY_LIST
-            + "(" + KEY_ID + " INTEGER PRIMARY KEY," + GROCERY_LIST_NAME + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+            + "(" + KEY_ID + " INTEGER PRIMARY KEY," + GROCERY_LIST_NAME + " TEXT, " + KEY_CREATED_AT
+            + " DATETIME" + ");";
 
     // CRUD STATEMENTS
     // Creating a grocery item method
@@ -91,13 +92,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(GROCERY_PRICE, item.getPrice());
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(GROCERY_ITEM_LIST_NAME, item.getGroceryListName());
+        //values.put(GROCERY_ISCHECKED, item.isChecked());
 
         //inserting new row
         long grocery_id = db.insert(TABLE_GROCERIES, null, values);
 
-        //Assigning grocery to a grocery_list
-        //createGrocery_List(grocery_id);
-        Log.d(TAG,"grocery created");
+        Log.d(TAG,item.getName() + "created");
 
         return grocery_id;
     }
@@ -105,17 +105,19 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     //method to destroy a grocery item
     public void deleteGrocery(String groceryName){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_GROCERIES, GROCERY_NAME + " = " + groceryName, null);
+        db.delete(TABLE_GROCERIES, GROCERY_NAME + " = '" + groceryName + "';", null);
     }
 
-    // returning a list of groceries by grocery_list name
-    // SELECT*FROM groceries WHERE name = listName;
+    /*
+     *  returning a list of groceries by grocery_list name
+     *  SELECT*FROM groceries WHERE name = 'listName';
+    */
     public List<GroceryItem> getGroceryList(String listName){
         SQLiteDatabase db = this.getReadableDatabase();
         List<GroceryItem> groceryItems = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM " + TABLE_GROCERIES + "WHERE " + GROCERY_ITEM_LIST_NAME +
-                " = " + listName;
+        String selectQuery = "SELECT * FROM " + TABLE_GROCERIES + " WHERE " + GROCERY_ITEM_LIST_NAME +
+                " = '" + listName + "';";
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -132,6 +134,64 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             }while(c.moveToNext());
         }
         return groceryItems;
+    }
+
+    /*
+    *Destroy a Grocery List(all groceries with the same 'list')
+    */
+    public void destroyGrocery_List(String listName){
+        Log.d(LOG, "destroying: " + listName);
+        List<GroceryItem> destroyableGroceries = getGroceryList(listName);
+        for(GroceryItem item: destroyableGroceries){
+            deleteGrocery(item.getName());
+        }
+    }
+
+    /*
+    *Return all created grocery lists names, in a String []
+     */
+    public ArrayList<String> getAllGroceryListNames(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String> groceryListNames = new ArrayList<>();
+
+        String selectQuery = "SELECT " + GROCERY_ITEM_LIST_NAME + " FROM " + TABLE_GROCERIES +
+                ";";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+        if(c.moveToFirst()){
+            do {
+                groceryListNames.add(c.getString(c.getColumnIndex(GROCERY_ITEM_LIST_NAME)));
+            }while(c.moveToNext());
+        }
+        //Remove duplicates by creating a Set from the ArrayList
+        Set<String>uniqueNames = new HashSet<>(groceryListNames);
+        ArrayList<String> returnList = new ArrayList<>();
+        returnList.addAll(uniqueNames);
+        return returnList;
+    }
+
+    /*
+    *Return a GroceryItem with a certain name
+     */
+    public GroceryItem getGrocery(String groceryName){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLE_GROCERIES + " WHERE " + GROCERY_NAME
+                + " = '" + groceryName + "';";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if(c != null)
+            c.moveToFirst();
+
+        GroceryItem item = new GroceryItem();
+        item.setAmount(c.getString(c.getColumnIndex(GROCERY_AMOUNT)));
+        item.setName(c.getString(c.getColumnIndex(GROCERY_NAME)));
+        item.setPrice(c.getString(c.getColumnIndex(GROCERY_PRICE)));
+
+        return item;
     }
 
     //Create a grocery_list method

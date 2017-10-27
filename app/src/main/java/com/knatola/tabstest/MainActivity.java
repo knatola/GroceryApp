@@ -2,6 +2,7 @@ package com.knatola.tabstest;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.knatola.tabstest.Data.GroceryItem;
 import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.Fridge.FridgeViewFragment;
 import com.knatola.tabstest.GroceryView.GroceryAddView;
@@ -29,14 +31,17 @@ import com.knatola.tabstest.GroceryView.GroceryListView;
 import com.knatola.tabstest.GroceryView.GroceryListsAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private static final String LOG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private boolean isGroceryListViewOn = false;
-    private ArrayList<GroceryList> groceryListslist;
+    private boolean dataChange;
+    private ArrayList<GroceryList> groceryLists;
     private String groceryListName;
     DatabaseHelper db;
 
@@ -44,14 +49,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        dataChange = false;
         db = new DatabaseHelper(getApplicationContext());
 
-        //android.app.FragmentManager fm = getFragmentManager();
+        db.destroyGrocery_List("aaa");
 
-        //returning ListName from bundle
-        if (getIntent().getExtras() != null){
-            setGroceryListName(getIntent().getExtras().getString("name"));
+        groceryLists = new ArrayList<>();
+        ArrayList<String> listNames = db.getAllGroceryListNames();
+        for(String i: listNames){
+            GroceryList groceryList = new GroceryList(i);
+            groceryLists.add(groceryList);
+        }
+
+        for(String i: listNames){
+            Log.d(LOG, i);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -72,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
         newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                     //   .setAction("Action", null).show();
-                //Fragment page = getSupportFragmentManager().findFragmentById(mViewPager.getCurrentItem());
+
                 if(mViewPager.getCurrentItem() == 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Create a new list");
@@ -102,16 +111,13 @@ public class MainActivity extends AppCompatActivity {
 
                             } else {
                                 final String groceryListName = et.getText().toString();
-                                //GroceryList newList = new GroceryList(groceryListName);
                                 Intent groceryAddIntent = new Intent(MainActivity.this, GroceryAddView.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("name", groceryListName);
+                                bundle.putBoolean("data_change", isDataChange());
                                 groceryAddIntent.putExtras(bundle);
+                                Log.d(LOG, "changing to GroceryAddView");
                                 startActivity(groceryAddIntent);
-                                GroceryList newList = new GroceryList(groceryListName);
-                                db.createGrocery_List(newList);
-                                db.closeDB();
-
                             }
                         }
                     });
@@ -124,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
                     builder.show();
 
                 }else {
-                    Snackbar.make(view, "There is nothing here yet", Snackbar.LENGTH_LONG).setAction("Action", null)
+                    List<GroceryItem> apuLista = db.getGroceryList("test13");
+                    GroceryItem test = apuLista.get(2);
+                    Snackbar.make(view, "item:" + test.getName(), Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();
                 }
             }
@@ -139,56 +147,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    /*public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }*/
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -210,9 +168,6 @@ public class MainActivity extends AppCompatActivity {
                     return tab1;
                 case 1:
                     GroceryListView tab2 = new GroceryListView();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", getGroceryListName());
-                    tab2.setArguments(bundle);
                     setGroceryListViewOn(true);
                     return tab2;
                 default:
@@ -239,6 +194,13 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+    public boolean isDataChange() {
+        return dataChange;
+    }
+
+    public void setDataChange(boolean dataChange) {
+        this.dataChange = dataChange;
+    }
 
     public boolean isGroceryListViewOn() {
         return isGroceryListViewOn;
@@ -246,10 +208,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void setGroceryListViewOn(boolean groceryListViewOn) {
         isGroceryListViewOn = groceryListViewOn;
-    }
-
-    public String getGroceryListName() {
-        return groceryListName;
     }
 
     public void setGroceryListName(String groceryListName) {

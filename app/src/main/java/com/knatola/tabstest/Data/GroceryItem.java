@@ -31,13 +31,12 @@ public class GroceryItem {
         this.amount = amount;
     }
 
-    public GroceryItem(String name, String price, String amount, GroceryList list){
+    public GroceryItem(String name, String price, String amount, String groceryListName){
         this.name = name;
         this.price = price;
         this.amount = amount;
-        this.list = list;
+        this.groceryListName = groceryListName;
     }
-
 
     /*
     *Default generated getters/setters
@@ -55,7 +54,7 @@ public class GroceryItem {
         this.groceryListName = groceryListName;
     }
 
-    public String getGroceryListName(){ return list.getName();}
+    public String getGroceryListName(){ return groceryListName;}
 
     public String getName() {
         return name;

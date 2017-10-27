@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class GroceryAddView extends AppCompatActivity {
 
+    private static final String LOG = "GroceryAddView";
     private String groceryListName;
     private ListView listView;
     private EditText editName, editPrice, editAmount;
@@ -34,9 +36,6 @@ public class GroceryAddView extends AppCompatActivity {
     private ArrayList<GroceryItem> lista;
     private CustomAdapter adapter;
     private FloatingActionButton saveButton;
-    PagerAdapter pagerAdapter;
-    ViewPager viewPager;
-    //private Context context = this.getApplicationContext();
     DatabaseHelper db;
 
     @Override
@@ -46,6 +45,7 @@ public class GroceryAddView extends AppCompatActivity {
         db = new DatabaseHelper(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
         groceryListName = bundle.getString("name");
+        Log.d(LOG,"Listan  nimi:" + groceryListName);
 
         addButton = (Button) findViewById(R.id.addButton);
         removeButton = (Button) findViewById(R.id.removeButton);
@@ -67,8 +67,8 @@ public class GroceryAddView extends AppCompatActivity {
                 final String name = editName.getText().toString();
                 final String price = editPrice.getText().toString();
                 final String amount = editAmount.getText().toString();
-                GroceryItem item = new GroceryItem(name, price, amount);
-                item.setGroceryListName(groceryListName);
+                GroceryItem item = new GroceryItem(name, price, amount, groceryListName);
+                Log.d(LOG,"Nimi:" + item.getGroceryListName());
                 AddItem(item);
                 db.createGrocery(item);
                 db.closeDB();
@@ -98,91 +98,10 @@ public class GroceryAddView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
-                //Intent backToMain = new Intent(GroceryAddView.this, MainActivity.class);
-                //startActivity(backToMain);
-
-                /*AlertDialog.Builder builder = new AlertDialog.Builder(GroceryAddView.this);
-                builder.setTitle("Save your list");
-                builder.setMessage("Give a name for your list.");
-                final EditText et = new EditText(GroceryAddView.this);
-                et.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(et);
-
-
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(et.getText().toString().equals("")){
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(GroceryAddView.this);
-                            builder1.setTitle("Error");
-                            builder1.setMessage("Give a name.");
-                            builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                }
-                            });
-
-                            builder1.show();
-
-                        }else{
-                            // if the field isn't empty move the name to MainActivity
-                            // and start the activity.
-                            final String groceryListName = et.getText().toString();
-                            //GroceryList newList = new GroceryList(groceryListName);
-                            Intent mainActivityI = new Intent(GroceryAddView.this, MainActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("name", groceryListName);
-                            mainActivityI.putExtras(bundle);
-                            startActivity(mainActivityI);
-                        }
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-
-                builder.show();
-            }*/
             }
         });
     }
 
-    //Method containing the logic for handling the groceryItem adding to listview
-    /*public void AddItem(){
-
-        if (editName.getText().toString().equals("") || editAmount.getText().toString().equals("") ||
-                editPrice.getText().toString().equals("")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(GroceryAddView.this);
-            builder.setTitle("Error: information missing.");
-            builder.setMessage("Please add more information...");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-
-            builder.show();
-
-        }else{
-            final String name = editName.getText().toString();
-            final String price = editPrice.getText().toString();
-            final String amount = editAmount.getText().toString();
-            GroceryItem item = new GroceryItem(name, price, amount);
-            lista.add(0, item);
-            adapter.notifyDataSetChanged();
-            editName.setText("");
-            editPrice.setText("");
-            editAmount.setText("");
-            editName.requestFocus();
-        }
-
-    }*/
     public void AddItem(GroceryItem item){
 
         if (item.getName().equals("") || item.getAmount().equals("") ||
