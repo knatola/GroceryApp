@@ -36,6 +36,7 @@ public class GroceryAddView extends AppCompatActivity {
     private ArrayList<GroceryItem> lista;
     private CustomAdapter adapter;
     private FloatingActionButton saveButton;
+    private String clickedListName;
     DatabaseHelper db;
 
     @Override
@@ -43,22 +44,35 @@ public class GroceryAddView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_view);
         db = new DatabaseHelper(getApplicationContext());
-        Bundle bundle = getIntent().getExtras();
+        lista = new ArrayList<>();
+        adapter = new CustomAdapter(this, R.layout.grocery_list_row, lista);
+        final Bundle bundle = getIntent().getExtras();
         groceryListName = bundle.getString("name");
-        Log.d(LOG,"Listan  nimi:" + groceryListName);
+        clickedListName = bundle.getString("clicked_list");
 
         addButton = (Button) findViewById(R.id.addButton);
         removeButton = (Button) findViewById(R.id.removeButton);
         saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
 
-        lista = new ArrayList<>();
-        adapter = new CustomAdapter(this, R.layout.grocery_list_row, lista);
+
 
         editName = (EditText) findViewById(R.id.newGroceryItem);
         editAmount = (EditText) findViewById(R.id.addAmount);
         editPrice = (EditText) findViewById(R.id.addPrice);
         listView = (ListView) findViewById(R.id.groceryList);
         listView.setAdapter(adapter);
+
+        //Log.d(LOG,bundle.getString("clicked_list"));
+
+        //Checking if activity was started from a ListView button click
+        if(groceryListName.equals("")){
+            ArrayList<GroceryItem> clickedList = db.getGroceryList(clickedListName);
+
+            for(GroceryItem item: clickedList)
+                lista.add(item);
+
+            adapter.notifyDataSetChanged();
+        }
 
         //handling of addButton press, with AddItem()
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -67,11 +81,17 @@ public class GroceryAddView extends AppCompatActivity {
                 final String name = editName.getText().toString();
                 final String price = editPrice.getText().toString();
                 final String amount = editAmount.getText().toString();
-                GroceryItem item = new GroceryItem(name, price, amount, groceryListName);
-                Log.d(LOG,"Nimi:" + item.getGroceryListName());
-                AddItem(item);
-                db.createGrocery(item);
-                db.closeDB();
+                if(bundle.getString("clicked_list").equals("")){
+                    GroceryItem item = new GroceryItem(name, price, amount, groceryListName);
+                    AddItem(item);
+                    db.createGrocery(item);
+                    db.closeDB();
+                }else{
+                    GroceryItem item2 = new GroceryItem(name, price, amount, clickedListName);
+                    AddItem(item2);
+                    db.createGrocery(item2);
+                    db.closeDB();
+                }
             }
         });
 
@@ -97,6 +117,7 @@ public class GroceryAddView extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onBackPressed();
             }
         });

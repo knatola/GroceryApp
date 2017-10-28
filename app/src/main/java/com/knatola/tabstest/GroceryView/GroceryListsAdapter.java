@@ -1,10 +1,15 @@
 package com.knatola.tabstest.GroceryView;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -32,13 +37,14 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(id, null);
         }
 
         final GroceryList groceryList = lists.get(position);
+        Button editListBtn = convertView.findViewById(R.id.editListBtn);
         TextView listName = (TextView) convertView.findViewById(R.id.groceryListName);
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.listCheckBox);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -48,10 +54,30 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
             }
         });
 
+        editListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String clickedList = getItem(position).getName();
+                Log.d("adapter", "Clicked: " + clickedList );
+                Bundle bundle = new Bundle();
+                bundle.putString("clicked_list",clickedList);
+                bundle.putString("name", "");
+                Intent addViewIntent = new Intent(context, GroceryAddView.class);
+                addViewIntent.putExtras(bundle);
+                context.startActivity(addViewIntent);
+            }
+        });
+
         listName.setText(groceryList.getName());
         checkBox.setChecked(groceryList.isChecked());
 
         return convertView;
+    }
+
+    @Nullable
+    @Override
+    public GroceryList getItem(int position) {
+        return super.getItem(position);
     }
 }
 

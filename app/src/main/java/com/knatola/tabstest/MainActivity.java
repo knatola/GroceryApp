@@ -52,10 +52,8 @@ public class MainActivity extends AppCompatActivity {
         dataChange = false;
         db = new DatabaseHelper(getApplicationContext());
 
-        db.destroyGrocery_List("aaa");
-
         groceryLists = new ArrayList<>();
-        ArrayList<String> listNames = db.getAllGroceryListNames();
+        final ArrayList<String> listNames = db.getAllGroceryListNames();
         for(String i: listNames){
             GroceryList groceryList = new GroceryList(i);
             groceryLists.add(groceryList);
@@ -95,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
                     builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //if the field is empty, prompt an error
-                            if (et.getText().toString().equals("")) {
+                            //if the field is empty or the given name is already used,
+                            // prompt an error
+                            String inputName = et.getText().toString();
+                            if (inputName.equals("") || listNames.contains(inputName)) {
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                                 builder1.setTitle("Error");
-                                builder1.setMessage("Give a name.");
+                                builder1.setMessage("Give an unique name.");
                                 builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent groceryAddIntent = new Intent(MainActivity.this, GroceryAddView.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("name", groceryListName);
+                                bundle.putString("clicked_list", "");
                                 bundle.putBoolean("data_change", isDataChange());
                                 groceryAddIntent.putExtras(bundle);
                                 Log.d(LOG, "changing to GroceryAddView");

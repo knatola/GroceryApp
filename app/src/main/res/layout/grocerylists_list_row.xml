@@ -1,34 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="#2E9AFE">
+    android:background="#BDBDBD"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#2E9AFE"
-        android:layout_weight="9"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:background="#BDBDBD"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/groceryListName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#FAFAFA"
-            android:textSize="50dp"/>
+            android:layout_height="55dp"
+            android:textColor="#000000"
+            android:textSize="50sp"
+            android:layout_marginVertical="1dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/editListBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="240dp"
+        android:background="@drawable/main_button"
+        android:backgroundTint="#088A08"
+        android:text="@string/edit"
+        android:layout_centerVertical="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
     <CheckBox
         android:id="@+id/listCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical" />
+        android:layout_centerVertical="true"
+        android:layout_marginStart="330dp"
+        />
 
-</LinearLayout>
+
+</RelativeLayout>

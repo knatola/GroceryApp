@@ -57,15 +57,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_GROCERIES);
         db.execSQL(CREATE_TABLE_GROCERY_LIST);
-
-        Log.d(TAG,"database onCreate");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROCERIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROCERY_LIST);
-
         onCreate(db);
     }
 
@@ -97,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         //inserting new row
         long grocery_id = db.insert(TABLE_GROCERIES, null, values);
 
-        Log.d(TAG,item.getName() + "created");
+        Log.d(TAG,item.getName() + " created");
 
         return grocery_id;
     }
@@ -112,9 +109,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
      *  returning a list of groceries by grocery_list name
      *  SELECT*FROM groceries WHERE name = 'listName';
     */
-    public List<GroceryItem> getGroceryList(String listName){
+    public ArrayList<GroceryItem> getGroceryList(String listName){
         SQLiteDatabase db = this.getReadableDatabase();
-        List<GroceryItem> groceryItems = new ArrayList<>();
+        ArrayList<GroceryItem> groceryItems = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_GROCERIES + " WHERE " + GROCERY_ITEM_LIST_NAME +
                 " = '" + listName + "';";

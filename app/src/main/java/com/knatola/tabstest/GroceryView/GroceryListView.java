@@ -1,5 +1,6 @@
 package com.knatola.tabstest.GroceryView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.knatola.tabstest.Data.GroceryList;
@@ -41,7 +43,6 @@ public class GroceryListView extends Fragment {
 
 
         //Returning all the groceryListNames from db, assigning them to ArrayList
-
         ArrayList<String> stringNames = db.getAllGroceryListNames();
 
         //Initializing groceryLists, from the returned names
@@ -57,6 +58,21 @@ public class GroceryListView extends Fragment {
         groceryListsView.setAdapter(listsAdapter);
         listsAdapter.notifyDataSetChanged();
 
+        /*//Handling of ListViews item clicks
+        groceryListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String clickedList = listsAdapter.getItem(i).getName();
+                Log.d(LOG, "Clicked" + clickedList );
+                Bundle bundle = new Bundle();
+                bundle.putString("clicked_list",clickedList);
+                Intent addViewIntent = new Intent(getContext(), GroceryAddView.class);
+                addViewIntent.putExtras(bundle);
+                startActivity(addViewIntent);
+            }
+        });*/
+
         return rootView;
     }
 
@@ -68,15 +84,11 @@ public class GroceryListView extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
-            String koko = String.valueOf(groceryLists.size());
-            String testib = String.valueOf(groceryLists.get(0).isChecked());
-            Log.d(LOG, "koko:"+ koko +" ja "+ testib);
             if (groceryLists.size() > 0){
                 for (int i = 0; i < groceryLists.size(); i++) {
                     if (i > groceryLists.size()) {
                         break;
                     }
-                    Log.d("Loopissa", "here");
                     if (groceryLists.get(i).isChecked()) {
                         db.destroyGrocery_List(groceryLists.get(i).getName());
                         db.closeDB();
