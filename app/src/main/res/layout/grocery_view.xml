@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,171 +9,127 @@
 
 
 
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="162dp"
-        android:layout_height="49dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="105dp"
-        android:background="@drawable/main_button"
-        android:backgroundTint="#088A08"
-        android:text="@string/add_button"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/newGroceryItem"
-        android:layout_width="344dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#000000"
-        android:ems="10"
-        android:hint="@string/add_item"
-        android:inputType="textPersonName"
-        android:labelFor="@+id/newItem"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#6E6E6E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
-
-    <EditText
-        android:id="@+id/addPrice"
-        android:layout_width="109dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="62dp"
-        android:backgroundTint="#000000"
-        android:ems="10"
-        android:hint="@string/price_number"
-        android:inputType="numberDecimal"
-        android:textColor="#D8D8D8"
-        android:textColorHint="#6E6E6E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.969"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <TextView
-        android:id="@+id/amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:text="@string/amount"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:text="@string/price"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.603"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <EditText
-        android:id="@+id/addAmount"
-        android:layout_width="77dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="62dp"
-        android:backgroundTint="#000000"
-        android:ems="10"
-        android:hint="@string/amount_number"
-        android:inputType="number"
-        android:textColor="#D8D8D8"
-        android:textColorHint="#6E6E6E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.329"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <Button
-        android:id="@+id/removeButton"
-        android:layout_width="162dp"
-        android:layout_height="49dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="105dp"
-        android:background="@drawable/red_button"
-        android:text="@string/remove_button"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/save"
-        app:backgroundTint="#088A08"
-        app:layout_anchor="@+id/groceries"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="455dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/white_save"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_marginBottom="5dp"/>
 
-    <ListView
-        android:id="@+id/groceryList"
-        android:layout_width="0dp"
-        android:layout_height="342dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="165dp"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlHardcoded" />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:backgroundTint="@color/colorPrimary"
+            app:title="@string/app_name">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
+        android:orientation="vertical"
+        android:baselineAligned="false">
+
+        <ListView
+            android:id="@+id/groceryList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            tools:ignore="RtlHardcoded"
+            android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:id="@+id/addItems"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginBottom="50dp">
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addPrice"
+            android:background="@drawable/main_button"
+            android:text="@string/add_button"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="#58ACFA" />
+
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addButton"
+            android:background="@drawable/red_button"
+            android:backgroundTint="#FA5882"
+            android:text="@string/remove_button"
+            android:textColor="#58ACFA" />
+
+        <EditText
+            android:id="@+id/newGroceryItem"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
+            android:ems="5"
+            android:hint="@string/add_item"
+            android:inputType="textPersonName"
+            android:labelFor="@+id/newItem"
+            android:textColor="#000000"
+            android:textColorHint="#6E6E6E" />
+
+        <EditText
+            android:id="@+id/addAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
+            android:layout_below="@id/newGroceryItem"
+            android:ems="5"
+            android:layout_alignParentStart="true"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:hint="@string/amount_number"
+            android:inputType="number"
+            android:textColor="#000000"
+            android:textColorHint="#6E6E6E"
+            android:layout_toEndOf="@id/addPrice"/>
+
+        <EditText
+            android:id="@+id/addPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
+            android:ems="5"
+            android:hint="@string/price_number"
+            android:inputType="numberDecimal"
+            android:layout_below="@id/newGroceryItem"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:layout_marginBottom="1dp"
+            android:textColor="#000000"
+            android:textColorHint="#6E6E6E" />
+
+    </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

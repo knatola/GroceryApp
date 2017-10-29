@@ -46,6 +46,7 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
         final GroceryList groceryList = lists.get(position);
         Button editListBtn = convertView.findViewById(R.id.editListBtn);
         TextView listName = (TextView) convertView.findViewById(R.id.groceryListName);
+        TextView listPrice = convertView.findViewById(R.id.groceryListPrice);
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.listCheckBox);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -70,6 +71,7 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
 
         listName.setText(groceryList.getName());
         checkBox.setChecked(groceryList.isChecked());
+        listPrice.setText("Price: " + String.format("%.2f", groceryList.getPrice()));
 
         return convertView;
     }

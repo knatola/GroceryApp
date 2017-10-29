@@ -18,6 +18,8 @@ import java.util.ArrayList;
  * Created by knatola on 7.10.2017.
  */
 
+//Adapter for Items in GroceryAddView
+
 public class CustomAdapter extends ArrayAdapter<GroceryItem> {
     private Activity context;
     private int id;
@@ -50,7 +52,7 @@ public class CustomAdapter extends ArrayAdapter<GroceryItem> {
             }
         });
 
-        itemName.setText("Name: " + item.getName());
+        itemName.setText(item.getName());
         amount.setText("Amount: " + item.getAmount());
         price.setText("Price: " + item.getPrice());
         checkBox.setChecked(item.isChecked());

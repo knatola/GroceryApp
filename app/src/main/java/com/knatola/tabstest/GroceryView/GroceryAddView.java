@@ -3,11 +3,14 @@ package com.knatola.tabstest.GroceryView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +41,7 @@ public class GroceryAddView extends AppCompatActivity {
     private FloatingActionButton saveButton;
     private String clickedListName;
     DatabaseHelper db;
+    ActionBar appBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,9 @@ public class GroceryAddView extends AppCompatActivity {
         final Bundle bundle = getIntent().getExtras();
         groceryListName = bundle.getString("name");
         clickedListName = bundle.getString("clicked_list");
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         addButton = (Button) findViewById(R.id.addButton);
         removeButton = (Button) findViewById(R.id.removeButton);
@@ -67,11 +74,15 @@ public class GroceryAddView extends AppCompatActivity {
         //Checking if activity was started from a ListView button click
         if(groceryListName.equals("")){
             ArrayList<GroceryItem> clickedList = db.getGroceryList(clickedListName);
+            //appbar.setTitle(clickedListName);
+            toolbar.setTitle(clickedListName);
 
             for(GroceryItem item: clickedList)
                 lista.add(item);
 
             adapter.notifyDataSetChanged();
+        } else {
+            toolbar.setTitle(groceryListName);
         }
 
         //handling of addButton press, with AddItem()
@@ -84,8 +95,6 @@ public class GroceryAddView extends AppCompatActivity {
                 if(bundle.getString("clicked_list").equals("")){
                     GroceryItem item = new GroceryItem(name, price, amount, groceryListName);
                     AddItem(item);
-                    db.createGrocery(item);
-                    db.closeDB();
                 }else{
                     GroceryItem item2 = new GroceryItem(name, price, amount, clickedListName);
                     AddItem(item2);
@@ -146,6 +155,8 @@ public class GroceryAddView extends AppCompatActivity {
             editPrice.setText("");
             editAmount.setText("");
             editName.requestFocus();
+            db.createGrocery(item);
+            db.closeDB();
         }
 
     }

@@ -48,7 +48,7 @@ public class GroceryListView extends Fragment {
         //Initializing groceryLists, from the returned names
         groceryLists = new ArrayList<>();
         for(String i: stringNames){
-            GroceryList groceryList = new GroceryList(i);
+            GroceryList groceryList = new GroceryList(i, db.getGroceryListPrice(i));
             groceryLists.add(0, groceryList);
         }
 
@@ -57,21 +57,6 @@ public class GroceryListView extends Fragment {
         groceryListsView = rootView.findViewById(R.id.groceryLists);
         groceryListsView.setAdapter(listsAdapter);
         listsAdapter.notifyDataSetChanged();
-
-        /*//Handling of ListViews item clicks
-        groceryListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String clickedList = listsAdapter.getItem(i).getName();
-                Log.d(LOG, "Clicked" + clickedList );
-                Bundle bundle = new Bundle();
-                bundle.putString("clicked_list",clickedList);
-                Intent addViewIntent = new Intent(getContext(), GroceryAddView.class);
-                addViewIntent.putExtras(bundle);
-                startActivity(addViewIntent);
-            }
-        });*/
 
         return rootView;
     }

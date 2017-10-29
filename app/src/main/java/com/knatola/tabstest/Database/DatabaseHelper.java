@@ -26,7 +26,7 @@ import java.util.Set;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String LOG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     private static final String TAG ="Database";
 
     public static final String DATABASE_NAME = "groceries.db";
@@ -70,8 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Groceries table statement
     private static final String CREATE_TABLE_GROCERIES = "CREATE TABLE " + TABLE_GROCERIES
             + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + GROCERY_NAME + " TEXT," + GROCERY_AMOUNT
-            + " TEXT," + GROCERY_PRICE + " TEXT," + GROCERY_ITEM_LIST_NAME + " TEXT," + GROCERY_ISCHECKED
-            + " INTEGER," + KEY_CREATED_AT
+            + " TEXT," + GROCERY_PRICE + " TEXT," + GROCERY_ITEM_LIST_NAME + " TEXT," +  KEY_CREATED_AT
             + " DATETIME" + ");";
 
     private static final String CREATE_TABLE_GROCERY_LIST = "CREATE TABLE " + TABLE_GROCERY_LIST
@@ -89,7 +88,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(GROCERY_PRICE, item.getPrice());
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(GROCERY_ITEM_LIST_NAME, item.getGroceryListName());
-        //values.put(GROCERY_ISCHECKED, item.isChecked());
 
         //inserting new row
         long grocery_id = db.insert(TABLE_GROCERIES, null, values);
@@ -131,6 +129,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             }while(c.moveToNext());
         }
         return groceryItems;
+    }
+
+    public double getGroceryListPrice(String listName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        double finalPrice = 0;
+        String selectQuery = "SELECT " + GROCERY_PRICE + " FROM " + TABLE_GROCERIES + " WHERE "
+                + GROCERY_ITEM_LIST_NAME + " = '" + listName + "';";
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+
+        if(c.moveToFirst()) {
+            do {
+                String addPrice = c.getString(c.getColumnIndex(GROCERY_PRICE));
+                double price = Double.parseDouble(addPrice);
+                finalPrice = finalPrice + price;
+                Log.d("hinta:", String.format("%.2f", finalPrice));
+
+            } while (c.moveToNext());
+        }
+        return finalPrice;
     }
 
     /*
