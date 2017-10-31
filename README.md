@@ -6,6 +6,6 @@ Grocery lists are stored into the phone with SQLite.
 
 App can be built with gradle.
 
-<img src="https://i.imgur.com/3rOU5JG.jpg" alt="pic1" width="200" height="350">    <img src="https://i.imgur.com/undefined.jpg" alt="pic1" width="200" height="350">
+<img src="https://i.imgur.com/3rOU5JG.jpg" alt="pic1" width="200" height="350">    <img src="https://i.imgur.com/IH9Yx1e.jpg" alt="pic1" width="200" height="350">
 
 
