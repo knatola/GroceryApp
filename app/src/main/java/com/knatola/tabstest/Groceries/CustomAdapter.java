@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.knatola.tabstest.Data.GroceryItem;
+import com.knatola.tabstest.ImageChooser;
 import com.knatola.tabstest.R;
 
 import java.util.ArrayList;
@@ -24,12 +26,14 @@ public class CustomAdapter extends ArrayAdapter<GroceryItem> {
     private Activity context;
     private int id;
     ArrayList<GroceryItem> list;
+    private ImageChooser imgC;
 
     public CustomAdapter(Activity context, int resource, ArrayList<GroceryItem> objects){
         super(context, resource, objects);
         this.context = context;
         this.id = resource;
         this.list = objects;
+        imgC = new ImageChooser();
     }
 
     @Override
@@ -43,6 +47,7 @@ public class CustomAdapter extends ArrayAdapter<GroceryItem> {
         TextView itemName = (TextView) convertView.findViewById(R.id.newGrocery);
         TextView amount = (TextView) convertView.findViewById(R.id.newAmount);
         TextView price = (TextView) convertView.findViewById(R.id.newPrice);
+        ImageView pic  = convertView.findViewById(R.id.foodPic);
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
@@ -56,6 +61,7 @@ public class CustomAdapter extends ArrayAdapter<GroceryItem> {
         amount.setText("Amount: " + item.getAmount());
         price.setText("Price: " + item.getPrice());
         checkBox.setChecked(item.isChecked());
+        pic.setImageResource(imgC.getFoodPic());
 
         return convertView;
     }

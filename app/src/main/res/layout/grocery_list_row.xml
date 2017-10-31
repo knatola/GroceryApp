@@ -6,11 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="60dp">
 
+    <ImageView
+        android:id="@+id/foodPic"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/grape"
+        android:background="@android:color/transparent"/>
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_weight="9"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        >
 
         <TextView
             android:id="@+id/newGrocery"
@@ -35,6 +44,7 @@
             android:layout_weight="1"
             android:text="testisana"
             android:textColor="#58ACFA" />
+
     </LinearLayout>
 
     <CheckBox
@@ -42,6 +52,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:layout_gravity="center"
+        android:layout_marginEnd="0dp"/>
 </LinearLayout>
 

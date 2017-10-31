@@ -82,7 +82,6 @@ public class GroceryListView extends Fragment {
             }
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

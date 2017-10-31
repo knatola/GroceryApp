@@ -103,10 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.delete(TABLE_GROCERIES, GROCERY_NAME + " = '" + groceryName + "';", null);
     }
 
-    /*
-     *  returning a list of groceries by grocery_list name
-     *  SELECT*FROM groceries WHERE name = 'listName';
-    */
+    // return a list of groceries by grocery_list name
     public ArrayList<GroceryItem> getGroceryList(String listName){
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<GroceryItem> groceryItems = new ArrayList<>();
@@ -131,6 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return groceryItems;
     }
 
+    //returns a grocery lists price
     public double getGroceryListPrice(String listName){
         SQLiteDatabase db = this.getReadableDatabase();
         double finalPrice = 0;
@@ -146,8 +144,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 String addPrice = c.getString(c.getColumnIndex(GROCERY_PRICE));
                 double price = Double.parseDouble(addPrice);
                 finalPrice = finalPrice + price;
-                Log.d("hinta:", String.format("%.2f", finalPrice));
-
             } while (c.moveToNext());
         }
         return finalPrice;
@@ -166,7 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     /*
     *Return all created grocery lists names, in a String []
-     */
+    */
     public ArrayList<String> getAllGroceryListNames(){
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<String> groceryListNames = new ArrayList<>();
@@ -189,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     /*
     *Return a GroceryItem with a certain name
-     */
+    */
     public GroceryItem getGrocery(String groceryName){
         SQLiteDatabase db = this.getReadableDatabase();
 

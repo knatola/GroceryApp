@@ -59,7 +59,6 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
             @Override
             public void onClick(View view) {
                 String clickedList = getItem(position).getName();
-                Log.d("adapter", "Clicked: " + clickedList );
                 Bundle bundle = new Bundle();
                 bundle.putString("clicked_list",clickedList);
                 bundle.putString("name", "");

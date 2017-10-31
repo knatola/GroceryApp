@@ -17,10 +17,10 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.knatola.tabstest.Data.GroceryItem;
 import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.Fridge.FridgeViewFragment;
 import com.knatola.tabstest.Groceries.GroceryAddView;
@@ -28,7 +28,7 @@ import com.knatola.tabstest.Data.GroceryList;
 import com.knatola.tabstest.Groceries.GroceryListView;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("name", groceryListName);
                                 bundle.putString("clicked_list", "");
-                                bundle.putBoolean("data_change", isDataChange());
                                 groceryAddIntent.putExtras(bundle);
                                 Log.d(LOG, "changing to GroceryAddView");
                                 startActivity(groceryAddIntent);
@@ -131,16 +130,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        db.closeDB();
+        super.onStop();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem saveList =  menu.findItem(R.id.action_save);
+        MenuItem deleteList =  menu.findItem(R.id.action_delete);
+        if(mViewPager.getCurrentItem()==1){
+            deleteList.setVisible(true);
+            saveList.setVisible(false);
+        }else{
+            deleteList.setVisible(false);
+            saveList.setVisible(false);
+        }
         return true;
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+    /*
+     * Fragment adapter that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -164,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     return null;
             }
-
         }
 
         @Override
@@ -199,19 +211,7 @@ public class MainActivity extends AppCompatActivity {
         return dataChange;
     }
 
-    public void setDataChange(boolean dataChange) {
-        this.dataChange = dataChange;
-    }
-
-    public boolean isGroceryListViewOn() {
-        return isGroceryListViewOn;
-    }
-
     public void setGroceryListViewOn(boolean groceryListViewOn) {
         isGroceryListViewOn = groceryListViewOn;
-    }
-
-    public void setGroceryListName(String groceryListName) {
-        this.groceryListName = groceryListName;
     }
 }

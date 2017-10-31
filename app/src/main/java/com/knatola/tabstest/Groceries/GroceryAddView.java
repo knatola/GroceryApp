@@ -11,6 +11,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -44,7 +46,6 @@ public class GroceryAddView extends AppCompatActivity {
     private FloatingActionButton saveButton;
     private String clickedListName;
     DatabaseHelper db;
-    private Expand expand;
     private boolean isVisible = false;
 
     @Override
@@ -127,7 +128,6 @@ public class GroceryAddView extends AppCompatActivity {
                             db.deleteGrocery(lista.get(i).getName());
                             lista.remove(i);
                             adapter.notifyDataSetChanged();
-                            //continue;
                         }
                     }
                 }
@@ -140,15 +140,11 @@ public class GroceryAddView extends AppCompatActivity {
             public void onClick(View view) {
                 if (isVisible) {
                     slideLayout.setVisibility(View.GONE);
-                    //animationHelper.expand(slideLayout, 500);
                     isVisible = false;
                 } else if (!slideLayout.isShown()) {
                     slideLayout.setVisibility(View.VISIBLE);
-                    //animationHelper.expand(slideLayout, 500);
-
                     isVisible = true;
                 }
-                //onBackPressed();
             }
         });
 
@@ -183,16 +179,11 @@ public class GroceryAddView extends AppCompatActivity {
 
     }
 
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
+    @Override
+    protected void onStop() {
+        db.closeDB();
+        super.onStop();
+    }
 
     //Handling backButton press
     @Override
@@ -202,45 +193,34 @@ public class GroceryAddView extends AppCompatActivity {
         startActivity(backIntent);
     }
 
+    //action bar back button
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 
-    private class Expand extends Animation {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem deleteList =  menu.findItem(R.id.action_delete);
+        deleteList.setVisible(false);
+        MenuItem saveList =  menu.findItem(R.id.action_save);
+        saveList.setVisible(true);
+        return true;
+    }
 
-        private final int targetHeight;
-        private final View view;
-        private final boolean down;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        public Expand(View view, int targetHeight, boolean down) {
-            this.view = view;
-            this.targetHeight = targetHeight;
-            this.down = down;
+        // Handle action bar item clicks here. The action bar will
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_save) {
+            onBackPressed();
         }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            int newHeight;
-            if (down) {
-                newHeight = (int) (targetHeight * interpolatedTime);
-            } else {
-                newHeight = (int) (targetHeight * (1 - interpolatedTime));
-            }
-            view.getLayoutParams().height = newHeight;
-            view.requestLayout();
-        }
-
-        @Override
-        public void initialize(int width, int height, int parentWidth,
-                               int parentHeight) {
-            super.initialize(width, height, parentWidth, parentHeight);
-        }
-
-        @Override
-        public boolean willChangeBounds() {
-            return true;
-        }
+        return super.onOptionsItemSelected(item);
     }
 }
