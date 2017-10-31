@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAFAFA"
-    android:id="@+id/groceries">
+    android:id="@+id/groceries"
+    android:animateLayoutChanges="true">
 
 
 
@@ -15,9 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/white_save"
+        android:src="@drawable/plus"
         app:backgroundTint="@color/colorPrimary"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -59,10 +60,10 @@
     <RelativeLayout
         android:id="@+id/addItems"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:layout_marginBottom="50dp">
+        android:layout_height="270dp"
+        android:visibility="gone"
+        android:background="@drawable/border"
+        android:animateLayoutChanges="true">
 
         <Button
             android:id="@+id/addButton"

@@ -1,4 +1,4 @@
-package com.knatola.tabstest.GroceryView;
+package com.knatola.tabstest.Groceries;
 
 import android.app.Activity;
 import android.content.Intent;

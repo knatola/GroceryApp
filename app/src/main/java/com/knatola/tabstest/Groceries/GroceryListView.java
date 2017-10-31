@@ -1,14 +1,11 @@
-package com.knatola.tabstest.GroceryView;
+package com.knatola.tabstest.Groceries;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.knatola.tabstest.Data.GroceryList;
@@ -16,7 +13,6 @@ import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.R;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Created by knatola on 11.10.2017.

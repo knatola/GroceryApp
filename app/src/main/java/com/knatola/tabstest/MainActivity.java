@@ -2,7 +2,6 @@ package com.knatola.tabstest;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -18,21 +17,18 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 import com.knatola.tabstest.Data.GroceryItem;
 import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.Fridge.FridgeViewFragment;
-import com.knatola.tabstest.GroceryView.GroceryAddView;
+import com.knatola.tabstest.Groceries.GroceryAddView;
 import com.knatola.tabstest.Data.GroceryList;
-import com.knatola.tabstest.GroceryView.GroceryListView;
-import com.knatola.tabstest.GroceryView.GroceryListsAdapter;
+import com.knatola.tabstest.Groceries.GroceryListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,10 +53,6 @@ public class MainActivity extends AppCompatActivity {
         for(String i: listNames){
             GroceryList groceryList = new GroceryList(i);
             groceryLists.add(groceryList);
-        }
-
-        for(String i: listNames){
-            Log.d(LOG, i);
         }
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -131,9 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     builder.show();
 
                 }else {
-                    List<GroceryItem> apuLista = db.getGroceryList("test13");
-                    GroceryItem test = apuLista.get(2);
-                    Snackbar.make(view, "item:" + test.getName(), Snackbar.LENGTH_LONG).setAction("Action", null)
+                    Snackbar.make(view, "Fridge is here" , Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();
                 }
             }
