@@ -42,11 +42,12 @@ public class GroceryAddView extends AppCompatActivity {
     private EditText editName, editPrice, editAmount;
     private Button addButton, removeButton;
     private ArrayList<GroceryItem> lista;
-    private CustomAdapter adapter;
+    private CustomAdapter mAdapter;
     private FloatingActionButton saveButton;
     private String clickedListName;
     DatabaseHelper db;
-    private boolean isVisible = false;
+    private boolean mIsVisible = false;
+    private RelativeLayout mSlideLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class GroceryAddView extends AppCompatActivity {
         setContentView(R.layout.groceryadd_view);
         db = new DatabaseHelper(getApplicationContext());
         lista = new ArrayList<>();
-        adapter = new CustomAdapter(this, R.layout.grocery_list_row, lista);
+        mAdapter = new CustomAdapter(this, R.layout.grocery_list_row, lista);
 
         final Bundle bundle = getIntent().getExtras();
         groceryListName = bundle.getString("name");
@@ -67,24 +68,13 @@ public class GroceryAddView extends AppCompatActivity {
         addButton = (Button) findViewById(R.id.addButton);
         removeButton = (Button) findViewById(R.id.removeButton);
         saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
-
-        final RelativeLayout slideLayout = (RelativeLayout) findViewById(R.id.addItems);
-        final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.groceries);
-
-
-        LayoutTransition t = mainLayout.getLayoutTransition();
-        t.setDuration(2000);
-        mainLayout.setLayoutTransition(t);
-
-
+        mSlideLayout = (RelativeLayout) findViewById(R.id.addItems);
 
         editName = (EditText) findViewById(R.id.newGroceryItem);
         editAmount = (EditText) findViewById(R.id.addAmount);
         editPrice = (EditText) findViewById(R.id.addPrice);
         listView = (ListView) findViewById(R.id.groceryList);
-        listView.setAdapter(adapter);
-
-        //Log.d(LOG,bundle.getString("clicked_list"));
+        listView.setAdapter(mAdapter);
 
         //Checking if activity was started from a ListView button click
         if (groceryListName.equals("")) {
@@ -94,7 +84,7 @@ public class GroceryAddView extends AppCompatActivity {
             for (GroceryItem item : clickedList)
                 lista.add(item);
 
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         } else {
             toolbar.setTitle(groceryListName);
         }
@@ -116,6 +106,7 @@ public class GroceryAddView extends AppCompatActivity {
             }
         });
 
+        //removeButton
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,7 +118,7 @@ public class GroceryAddView extends AppCompatActivity {
                         if (lista.get(i).isChecked()) {
                             db.deleteGrocery(lista.get(i).getName());
                             lista.remove(i);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -138,18 +129,19 @@ public class GroceryAddView extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isVisible) {
-                    slideLayout.setVisibility(View.GONE);
-                    isVisible = false;
-                } else if (!slideLayout.isShown()) {
-                    slideLayout.setVisibility(View.VISIBLE);
-                    isVisible = true;
+                if (mIsVisible) {
+                    mSlideLayout.setVisibility(View.GONE);
+                    mIsVisible = false;
+                } else if (!mSlideLayout.isShown()) {
+                    mSlideLayout.setVisibility(View.VISIBLE);
+                    mIsVisible = true;
                 }
             }
         });
 
     }
 
+    //help method
     public void AddItem(GroceryItem item) {
 
         if (item.getName().equals("") || item.getAmount().equals("") ||
@@ -168,7 +160,7 @@ public class GroceryAddView extends AppCompatActivity {
 
         } else {
             lista.add(0, item);
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
             editName.setText("");
             editPrice.setText("");
             editAmount.setText("");
@@ -176,7 +168,6 @@ public class GroceryAddView extends AppCompatActivity {
             db.createGrocery(item);
             db.closeDB();
         }
-
     }
 
     @Override
@@ -188,9 +179,13 @@ public class GroceryAddView extends AppCompatActivity {
     //Handling backButton press
     @Override
     public void onBackPressed() {
-        finish();
-        Intent backIntent = new Intent(GroceryAddView.this, MainActivity.class);
-        startActivity(backIntent);
+        if(mSlideLayout.getVisibility()== View.VISIBLE) {
+            mSlideLayout.setVisibility(View.GONE);
+        }else {
+            finish();
+            Intent backIntent = new Intent(GroceryAddView.this, MainActivity.class);
+            startActivity(backIntent);
+        }
     }
 
     //action bar back button
@@ -208,6 +203,8 @@ public class GroceryAddView extends AppCompatActivity {
         deleteList.setVisible(false);
         MenuItem saveList =  menu.findItem(R.id.action_save);
         saveList.setVisible(true);
+        MenuItem value = menu.findItem(R.id.action_value);
+        value.setVisible(false);
         return true;
     }
 

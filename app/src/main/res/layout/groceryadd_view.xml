@@ -8,7 +8,14 @@
     android:id="@+id/groceries"
     android:animateLayoutChanges="true">
 
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/food"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:elevation="-10dp"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/saveButton"
@@ -18,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/plus"
         app:backgroundTint="@color/colorPrimary"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -55,12 +62,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             tools:ignore="RtlHardcoded"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:elevation="10dp"/>
 
     <RelativeLayout
         android:id="@+id/addItems"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="280dp"
         android:visibility="gone"
         android:background="@drawable/border"
         android:animateLayoutChanges="true">

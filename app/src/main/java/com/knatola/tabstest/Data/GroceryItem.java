@@ -1,5 +1,7 @@
 package com.knatola.tabstest.Data;
 
+import com.knatola.tabstest.ImageChooser;
+
 /**
  * Created by knatola on 9.10.2017.
  */
@@ -36,6 +38,7 @@ public class GroceryItem {
         this.price = price;
         this.amount = amount;
         this.groceryListName = groceryListName;
+
     }
 
     /*

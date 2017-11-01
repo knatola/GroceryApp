@@ -1,11 +1,8 @@
 package com.knatola.tabstest;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -14,16 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.knatola.tabstest.Database.DatabaseHelper;
 import com.knatola.tabstest.Fridge.FridgeViewFragment;
-import com.knatola.tabstest.Groceries.GroceryAddView;
 import com.knatola.tabstest.Data.GroceryList;
 import com.knatola.tabstest.Groceries.GroceryListView;
 
@@ -35,10 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private boolean isGroceryListViewOn = false;
     private boolean dataChange;
     private ArrayList<GroceryList> groceryLists;
-    private String groceryListName;
     DatabaseHelper db;
 
     @Override
@@ -69,65 +62,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton newListButton = (FloatingActionButton) findViewById(R.id.fab);
-        newListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(mViewPager.getCurrentItem() == 1) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("Create a new list");
-                    builder.setMessage("Give a name for your grocery list.");
-                    final EditText et = new EditText(MainActivity.this);
-                    et.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(et);
-
-                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //if the field is empty or the given name is already used,
-                            // prompt an error
-                            String inputName = et.getText().toString();
-                            if (inputName.equals("") || listNames.contains(inputName)) {
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                                builder1.setTitle("Error");
-                                builder1.setMessage("Give an unique name.");
-                                builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    }
-                                });
-
-                                builder1.show();
-
-                            } else {
-                                final String groceryListName = et.getText().toString();
-                                Intent groceryAddIntent = new Intent(MainActivity.this, GroceryAddView.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putString("name", groceryListName);
-                                bundle.putString("clicked_list", "");
-                                groceryAddIntent.putExtras(bundle);
-                                Log.d(LOG, "changing to GroceryAddView");
-                                startActivity(groceryAddIntent);
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-                    builder.show();
-
-                }else {
-                    Snackbar.make(view, "Fridge is here" , Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-            }
-        });
-
     }
 
     @Override
@@ -142,14 +76,33 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem saveList =  menu.findItem(R.id.action_save);
         MenuItem deleteList =  menu.findItem(R.id.action_delete);
+        MenuItem value = menu.findItem(R.id.action_value);
         if(mViewPager.getCurrentItem()==1){
             deleteList.setVisible(true);
             saveList.setVisible(false);
+            value.setVisible(false);
         }else{
             deleteList.setVisible(false);
             saveList.setVisible(false);
+            value.setVisible(true);
         }
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_value) {
+            View parentLayout = findViewById(R.id.main_content);
+            Snackbar snackbar = Snackbar.make(parentLayout,"Fridges total value: " + String.format("%.2f", db.getGroceryListPrice("fridge")),
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction("Action", null).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /*
@@ -168,11 +121,9 @@ public class MainActivity extends AppCompatActivity {
             switch (position){
                 case 0:
                     FridgeViewFragment tab1 = new FridgeViewFragment();
-                    setGroceryListViewOn(false);
                     return tab1;
                 case 1:
                     GroceryListView tab2 = new GroceryListView();
-                    setGroceryListViewOn(true);
                     return tab2;
                 default:
                     return null;
@@ -201,17 +152,16 @@ public class MainActivity extends AppCompatActivity {
     //Handling backButton press
     @Override
     public void onBackPressed() {
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
-    }
 
-    public boolean isDataChange() {
-        return dataChange;
-    }
+        View v = findViewById(R.id.addItems);
 
-    public void setGroceryListViewOn(boolean groceryListViewOn) {
-        isGroceryListViewOn = groceryListViewOn;
+        if(mViewPager.getCurrentItem()==0 && v.getVisibility()== View.VISIBLE){
+            v.setVisibility(View.GONE);
+        }else {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
     }
 }

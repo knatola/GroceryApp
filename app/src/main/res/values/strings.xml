@@ -18,4 +18,5 @@
     <string name="action_delete">Delete list</string>
     <string name="edit">Edit</string>
     <string name="action_save">Save list</string>
+    <string name="action_value">Fridges value</string>
 </resources>

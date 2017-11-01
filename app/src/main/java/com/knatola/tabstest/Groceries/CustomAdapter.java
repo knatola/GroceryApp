@@ -36,6 +36,8 @@ public class CustomAdapter extends ArrayAdapter<GroceryItem> {
         imgC = new ImageChooser();
     }
 
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         if(convertView==null){
