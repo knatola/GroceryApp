@@ -211,7 +211,7 @@ public class GroceryAddView extends AppCompatActivity implements CustomAdapter.O
         super.onStop();
     }
 
-    //Handling backButton press
+    //Handling physical backButton press
     @Override
     public void onBackPressed() {
         if(mSlideLayout.getVisibility()== View.VISIBLE) {
@@ -233,7 +233,6 @@ public class GroceryAddView extends AppCompatActivity implements CustomAdapter.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem saveList =  menu.findItem(R.id.action_save);
         saveList.setVisible(true);
@@ -245,15 +244,14 @@ public class GroceryAddView extends AppCompatActivity implements CustomAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // Handle action bar item clicks here. The action bar will
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
+    //helper class to communicate with adapter through interface
     public class UndoListener implements View.OnClickListener{
         GroceryItem item;
         public UndoListener(GroceryItem item){
@@ -265,7 +263,6 @@ public class GroceryAddView extends AppCompatActivity implements CustomAdapter.O
             db.deleteGrocery(item.getName());
             lista.remove(item);
             mAdapter.notifyDataSetChanged();
-            // Code to undo the user's last action
         }
     }
 

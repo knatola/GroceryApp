@@ -194,6 +194,7 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
             newSnackBar.show();
         }
     }
+    //helper class to communicate with list adapter through interface
     public class UndoListener implements View.OnClickListener{
         GroceryItem item;
         public UndoListener(GroceryItem item){
@@ -205,7 +206,6 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
             db.deleteGrocery(item.getName());
             mLista.remove(item);
             mAdapter.notifyDataSetChanged();
-            // Code to undo the user's last action
         }
     }
 }
