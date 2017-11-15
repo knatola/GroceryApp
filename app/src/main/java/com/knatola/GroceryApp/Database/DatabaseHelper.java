@@ -1,4 +1,4 @@
-package com.knatola.tabstest.Database;
+package com.knatola.GroceryApp.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
-import com.knatola.tabstest.Data.GroceryItem;
-import com.knatola.tabstest.Data.GroceryList;
+import com.knatola.GroceryApp.Data.GroceryItem;
+import com.knatola.GroceryApp.Data.GroceryList;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,6 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void deleteGrocery(String groceryName){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_GROCERIES, GROCERY_NAME + " = '" + groceryName + "';", null);
+        Log.e(TAG, groceryName + " deleted");
     }
 
     // return a list of groceries by grocery_list name

@@ -1,4 +1,4 @@
-package com.knatola.tabstest.Groceries;
+package com.knatola.GroceryApp.Groceries;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +15,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.knatola.tabstest.Data.GroceryList;
-import com.knatola.tabstest.Database.DatabaseHelper;
-import com.knatola.tabstest.MainActivity;
-import com.knatola.tabstest.R;
+import com.knatola.GroceryApp.Data.GroceryList;
+import com.knatola.GroceryApp.Database.DatabaseHelper;
+import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;
 
@@ -26,24 +25,29 @@ import java.util.ArrayList;
  * Created by knatola on 11.10.2017.
  */
 
-public class GroceryListView extends Fragment {
+public class GroceryListView extends Fragment implements CustomAdapter.OnCheckChangeListener {
 
     private static final String LOG = "GroceryListView fragment";
     GroceryListsAdapter listsAdapter;
     private ArrayList<GroceryList> groceryLists;
     private ListView groceryListsView;
     DatabaseHelper db;
-    private Boolean isDataChanged;
+    private FloatingActionButton mRemoveButton;
+
+    @Override
+    public void onCheckChange(boolean isChecked) {
+        if (isChecked && listsAdapter.isAnyItemChecked(groceryLists))
+            mRemoveButton.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.grocerylists_view, container, false);
         setHasOptionsMenu(true);
         db = new DatabaseHelper(getContext());
         Bundle bundle = new Bundle();
-        isDataChanged = bundle.getBoolean("data_change");
+        mRemoveButton = rootView.findViewById(R.id.removeList);
 
 
         //Returning all the groceryListNames from db, assigning them to ArrayList
@@ -68,6 +72,42 @@ public class GroceryListView extends Fragment {
         groceryListsView.setAdapter(listsAdapter);
         listsAdapter.notifyDataSetChanged();
 
+        //If any checkbox is checked, mRemoveItemBtn will be visible.
+        listsAdapter.setOnDataChangeListener(new CustomAdapter.OnCheckChangeListener() {
+            @Override
+            public void onCheckChange(boolean isChecked) {
+                if (isChecked && listsAdapter.isAnyItemChecked(groceryLists)){
+                    mRemoveButton.setVisibility(View.VISIBLE);
+                }
+                else{
+                    mRemoveButton.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        //mRemoveButton
+        mRemoveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    if (groceryLists.size() > 0){
+                        for (int i = 0; i < groceryLists.size(); i++) {
+                            if (i > groceryLists.size()) {
+                                break;
+                            }
+                            if (groceryLists.get(i).isChecked()) {
+                                db.destroyGrocery_List(groceryLists.get(i).getName());
+                                db.closeDB();
+                                groceryLists.remove(i);
+                                listsAdapter.notifyDataSetChanged();
+
+                                continue;
+                            }
+                        }
+                    }
+            }
+        });
+
+        //newListButton handling
         FloatingActionButton newListButton = rootView.findViewById(R.id.newList);
         newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,33 +161,5 @@ public class GroceryListView extends Fragment {
             }
         });
         return rootView;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Handle action bar item clicks here.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_delete) {
-            if (groceryLists.size() > 0){
-                for (int i = 0; i < groceryLists.size(); i++) {
-                    if (i > groceryLists.size()) {
-                        break;
-                    }
-                    if (groceryLists.get(i).isChecked()) {
-                        db.destroyGrocery_List(groceryLists.get(i).getName());
-                        db.closeDB();
-                        groceryLists.remove(i);
-                        listsAdapter.notifyDataSetChanged();
-
-                        continue;
-                    }
-                }
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

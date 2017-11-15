@@ -1,6 +1,4 @@
-package com.knatola.tabstest.Data;
-
-import com.knatola.tabstest.ImageChooser;
+package com.knatola.GroceryApp.Data;
 
 /**
  * Created by knatola on 9.10.2017.

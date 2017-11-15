@@ -1,4 +1,4 @@
-package com.knatola.tabstest;
+package com.knatola.GroceryApp;
 
 import org.junit.Test;
 

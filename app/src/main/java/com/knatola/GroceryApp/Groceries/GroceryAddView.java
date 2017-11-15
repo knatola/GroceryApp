@@ -1,32 +1,27 @@
-package com.knatola.tabstest.Groceries;
+package com.knatola.GroceryApp.Groceries;
 
-import android.animation.Animator;
-import android.animation.LayoutTransition;
-import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.knatola.tabstest.Database.DatabaseHelper;
-import com.knatola.tabstest.MainActivity;
-import com.knatola.tabstest.R;
-import com.knatola.tabstest.Data.GroceryItem;
+import com.knatola.GroceryApp.Database.DatabaseHelper;
+import com.knatola.GroceryApp.Fridge.FridgeViewFragment;
+import com.knatola.GroceryApp.MainActivity;
+import com.knatola.GroceryApp.R;
+import com.knatola.GroceryApp.Data.GroceryItem;
 
 import java.util.ArrayList;
 
@@ -34,13 +29,14 @@ import java.util.ArrayList;
  * Created by knatola on 7.10.2017.
  */
 
-public class GroceryAddView extends AppCompatActivity {
+public class GroceryAddView extends AppCompatActivity implements CustomAdapter.OnCheckChangeListener{
 
     private static final String LOG = "GroceryAddView";
     private String groceryListName;
     private ListView listView;
     private EditText editName, editPrice, editAmount;
-    private Button addButton, removeButton;
+    private Button addButton;
+    private FloatingActionButton mRemoveButton;
     private ArrayList<GroceryItem> lista;
     private CustomAdapter mAdapter;
     private FloatingActionButton saveButton;
@@ -48,6 +44,13 @@ public class GroceryAddView extends AppCompatActivity {
     DatabaseHelper db;
     private boolean mIsVisible = false;
     private RelativeLayout mSlideLayout;
+    private View mClickView;
+
+    @Override
+    public void onCheckChange(boolean isChecked) {
+        if (isChecked && mAdapter.isAnyItemChecked(lista))
+            mRemoveButton.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +63,15 @@ public class GroceryAddView extends AppCompatActivity {
         final Bundle bundle = getIntent().getExtras();
         groceryListName = bundle.getString("name");
         clickedListName = bundle.getString("clicked_list");
+        mClickView = findViewById(R.id.clickView);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         addButton = (Button) findViewById(R.id.addButton);
-        removeButton = (Button) findViewById(R.id.removeButton);
-        saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
+        mRemoveButton = (FloatingActionButton) findViewById(R.id.removeButton);
+        saveButton = (FloatingActionButton) findViewById(R.id.plusButton);
         mSlideLayout = (RelativeLayout) findViewById(R.id.addItems);
 
         editName = (EditText) findViewById(R.id.newGroceryItem);
@@ -75,6 +79,19 @@ public class GroceryAddView extends AppCompatActivity {
         editPrice = (EditText) findViewById(R.id.addPrice);
         listView = (ListView) findViewById(R.id.groceryList);
         listView.setAdapter(mAdapter);
+        //If any checkbox is checked, mRemoveItemBtn will be visible.
+
+        mAdapter.setOnDataChangeListener(new CustomAdapter.OnCheckChangeListener() {
+            @Override
+            public void onCheckChange(boolean isChecked) {
+                if (isChecked && mAdapter.isAnyItemChecked(lista)){
+                    mRemoveButton.setVisibility(View.VISIBLE);
+                }
+                else{
+                    mRemoveButton.setVisibility(View.GONE);
+                }
+            }
+        });
 
         //Checking if activity was started from a ListView button click
         if (groceryListName.equals("")) {
@@ -107,7 +124,7 @@ public class GroceryAddView extends AppCompatActivity {
         });
 
         //removeButton
-        removeButton.setOnClickListener(new View.OnClickListener() {
+        mRemoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (lista.size() > 0) {
@@ -131,11 +148,22 @@ public class GroceryAddView extends AppCompatActivity {
             public void onClick(View view) {
                 if (mIsVisible) {
                     mSlideLayout.setVisibility(View.GONE);
+                    mClickView.setVisibility(View.GONE);
                     mIsVisible = false;
                 } else if (!mSlideLayout.isShown()) {
                     mSlideLayout.setVisibility(View.VISIBLE);
+                    mClickView.setVisibility(View.VISIBLE);
                     mIsVisible = true;
                 }
+            }
+        });
+
+        mClickView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSlideLayout.setVisibility(View.GONE);
+                mIsVisible = false;
+                mClickView.setVisibility(View.GONE);
             }
         });
 
@@ -167,6 +195,13 @@ public class GroceryAddView extends AppCompatActivity {
             editName.requestFocus();
             db.createGrocery(item);
             db.closeDB();
+            mSlideLayout.setVisibility(View.GONE);
+            mClickView.setVisibility(View.GONE);
+            Snackbar newSnackBar = Snackbar.make(findViewById(R.id.groceries),
+                    item.getName()+ " added.", Snackbar.LENGTH_LONG);
+            newSnackBar.setAction("UNDO", new UndoListener(item));
+            newSnackBar.setActionTextColor(Color.RED);
+            newSnackBar.show();
         }
     }
 
@@ -181,6 +216,7 @@ public class GroceryAddView extends AppCompatActivity {
     public void onBackPressed() {
         if(mSlideLayout.getVisibility()== View.VISIBLE) {
             mSlideLayout.setVisibility(View.GONE);
+            mClickView.setVisibility(View.GONE);
         }else {
             finish();
             Intent backIntent = new Intent(GroceryAddView.this, MainActivity.class);
@@ -199,8 +235,6 @@ public class GroceryAddView extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem deleteList =  menu.findItem(R.id.action_delete);
-        deleteList.setVisible(false);
         MenuItem saveList =  menu.findItem(R.id.action_save);
         saveList.setVisible(true);
         MenuItem value = menu.findItem(R.id.action_value);
@@ -220,4 +254,19 @@ public class GroceryAddView extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public class UndoListener implements View.OnClickListener{
+        GroceryItem item;
+        public UndoListener(GroceryItem item){
+            this.item = item;
+        }
+
+        @Override
+        public void onClick(View v) {
+            db.deleteGrocery(item.getName());
+            lista.remove(item);
+            mAdapter.notifyDataSetChanged();
+            // Code to undo the user's last action
+        }
+    }
+
 }

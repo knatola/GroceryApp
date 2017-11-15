@@ -8,17 +8,8 @@
     android:id="@+id/groceries"
     android:animateLayoutChanges="true">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/food"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:elevation="-10dp"
-        />
-
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/saveButton"
+        android:id="@+id/plusButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -26,6 +17,19 @@
         android:src="@drawable/plus"
         app:backgroundTint="@color/colorPrimary"
         android:layout_marginBottom="20dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/removeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/plusButton"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/delete"
+        android:visibility="gone"
+        app:backgroundTint="#FF0040"
+        />
+
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -50,6 +54,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/nothing_here"
+        android:layout_marginTop="80dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,13 +76,18 @@
             android:layout_weight="1"
             android:elevation="10dp"/>
 
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/addItems"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
         android:visibility="gone"
         android:background="@drawable/border"
-        android:animateLayoutChanges="true">
+        android:elevation="10dp"
+        android:layout_alignBottom="@id/plusButton">
 
         <Button
             android:id="@+id/addButton"
@@ -81,16 +97,6 @@
             android:background="@drawable/main_button"
             android:text="@string/add_button"
             android:backgroundTint="@color/colorPrimary"
-            android:textColor="#58ACFA" />
-
-        <Button
-            android:id="@+id/removeButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/addButton"
-            android:background="@drawable/red_button"
-            android:backgroundTint="#FA5882"
-            android:text="@string/remove_button"
             android:textColor="#58ACFA" />
 
         <EditText
@@ -138,8 +144,14 @@
             android:layout_marginBottom="1dp"
             android:textColor="#000000"
             android:textColorHint="#6E6E6E" />
-
     </RelativeLayout>
-    </LinearLayout>
 
+    <View
+        android:id="@+id/clickView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:background="@drawable/transparent"
+        android:visibility="gone"
+        />
 </RelativeLayout>

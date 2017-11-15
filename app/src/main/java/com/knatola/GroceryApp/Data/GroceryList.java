@@ -1,8 +1,4 @@
-package com.knatola.tabstest.Data;
-
-import com.knatola.tabstest.Data.GroceryItem;
-
-import java.util.ArrayList;
+package com.knatola.GroceryApp.Data;
 
 /**
  * Created by knatola on 11.10.2017.

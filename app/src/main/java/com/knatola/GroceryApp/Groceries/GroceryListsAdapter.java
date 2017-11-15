@@ -1,10 +1,9 @@
-package com.knatola.tabstest.Groceries;
+package com.knatola.GroceryApp.Groceries;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.knatola.tabstest.Data.GroceryList;
-import com.knatola.tabstest.R;
+import com.knatola.GroceryApp.Data.GroceryItem;
+import com.knatola.GroceryApp.Data.GroceryList;
+import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;
 
@@ -36,6 +36,23 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
         this.lists = lists;
     }
 
+    public boolean isAnyItemChecked(ArrayList<GroceryList> lists){
+        for (GroceryList list: lists){
+            if (list.isChecked())
+                return true;
+        }
+        return false;
+    }
+
+    public interface OnCheckChangeListener{
+        public void onCheckChange(boolean isChecked);
+    }
+    CustomAdapter.OnCheckChangeListener mOnCheckChangeListener;
+
+    public void setOnDataChangeListener(CustomAdapter.OnCheckChangeListener onCheckChangeListener) {
+        mOnCheckChangeListener = onCheckChangeListener;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -53,6 +70,9 @@ public class GroceryListsAdapter extends ArrayAdapter<GroceryList> {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 groceryList.setIsChecked(b);
+                if(mOnCheckChangeListener != null){
+                    mOnCheckChangeListener.onCheckChange(isAnyItemChecked(lists));
+                }
             }
         });
 
