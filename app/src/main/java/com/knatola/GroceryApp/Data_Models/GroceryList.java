@@ -1,4 +1,4 @@
-package com.knatola.GroceryApp.Data;
+package com.knatola.GroceryApp.Data_Models;
 
 /**
  * Created by knatola on 11.10.2017.

@@ -18,10 +18,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.knatola.GroceryApp.Database.DatabaseHelper;
-import com.knatola.GroceryApp.Fridge.FridgeViewFragment;
 import com.knatola.GroceryApp.MainActivity;
 import com.knatola.GroceryApp.R;
-import com.knatola.GroceryApp.Data.GroceryItem;
+import com.knatola.GroceryApp.Data_Models.GroceryItem;
 
 import java.util.ArrayList;
 

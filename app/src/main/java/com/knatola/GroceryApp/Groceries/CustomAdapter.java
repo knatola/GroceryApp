@@ -1,7 +1,6 @@
 package com.knatola.GroceryApp.Groceries;
 
 import android.app.Activity;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.knatola.GroceryApp.Data.GroceryItem;
+import com.knatola.GroceryApp.Data_Models.GroceryItem;
 import com.knatola.GroceryApp.ImageChooser;
 import com.knatola.GroceryApp.R;
 

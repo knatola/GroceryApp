@@ -83,11 +83,11 @@
         android:id="@+id/addItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="55dp"
         android:visibility="gone"
         android:background="@drawable/border"
         android:elevation="10dp"
-        android:layout_alignBottom="@id/plusButton">
+        android:layout_alignParentBottom="true" >
 
         <Button
             android:id="@+id/addButton"

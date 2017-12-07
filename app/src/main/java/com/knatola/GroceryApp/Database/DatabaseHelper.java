@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
-import com.knatola.GroceryApp.Data.GroceryItem;
-import com.knatola.GroceryApp.Data.GroceryList;
+import com.knatola.GroceryApp.Data_Models.GroceryItem;
+import com.knatola.GroceryApp.Data_Models.GroceryList;
 
 import java.util.ArrayList;
 import java.util.Date;

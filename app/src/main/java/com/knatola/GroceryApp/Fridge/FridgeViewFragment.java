@@ -2,7 +2,6 @@ package com.knatola.GroceryApp.Fridge;
 
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,11 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.knatola.GroceryApp.Data.GroceryItem;
+import com.knatola.GroceryApp.Data_Models.GroceryItem;
 import com.knatola.GroceryApp.Database.DatabaseHelper;
 import com.knatola.GroceryApp.Groceries.CustomAdapter;
-import com.knatola.GroceryApp.Groceries.GroceryAddView;
-import com.knatola.GroceryApp.MainActivity;
 import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;

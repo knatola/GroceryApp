@@ -1,4 +1,4 @@
-package com.knatola.GroceryApp.Data;
+package com.knatola.GroceryApp.Data_Models;
 
 /**
  * Created by knatola on 9.10.2017.
@@ -18,11 +18,12 @@ public class GroceryItem {
 
     public GroceryItem(){}
 
-    public GroceryItem(String name, String price, String amount, int id){
+    public GroceryItem(String name, String price, String amount, int id, String groceryListName){
+        this.id = id;
         this.name = name;
         this.price = price;
         this.amount = amount;
-        this.id = id;
+        this.groceryListName = groceryListName;
     }
 
     public GroceryItem(String name, String price, String amount){

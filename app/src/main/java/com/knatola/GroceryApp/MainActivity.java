@@ -19,16 +19,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.knatola.GroceryApp.Data_Models.GroceryItem;
 import com.knatola.GroceryApp.Database.DatabaseHelper;
 import com.knatola.GroceryApp.Fridge.FridgeViewFragment;
-import com.knatola.GroceryApp.Data.GroceryList;
+import com.knatola.GroceryApp.Data_Models.GroceryList;
 import com.knatola.GroceryApp.Groceries.GroceryListView;
+import com.knatola.GroceryApp.Networking.Client;
+import com.knatola.GroceryApp.Networking.Request;
+import com.knatola.GroceryApp.Networking.RestService;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String STR_URL = "http://192.168.0.101:8080/";
     private static final String LOG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -37,20 +48,39 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    RestService service;
+    Client client;
+    ArrayList<GroceryItem> testiLista = new ArrayList<>();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        client = new Client();
+        db = new DatabaseHelper(getApplicationContext());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = new DatabaseHelper(getApplicationContext());
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.string.open,
                 R.string.close);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        //Call<List<GroceryItem>> testiLista = service.getGroceryList("ekalista");
+        //GroceryItem testiItem = new GroceryItem("testi", "1", "3", "testiLista");
+
+        //Request getListReq = new Request("GET", "http://192.168.0.101:8080/groceries/ekalista", "ekalista" );
+
+                //client.getGroceryList(getListReq);
+
+        //Log.d(LOG, client.getGroceryList(getListReq).get(0).getName());
+
+
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
