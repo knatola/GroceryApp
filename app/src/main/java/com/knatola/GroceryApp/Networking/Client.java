@@ -1,162 +1,117 @@
 package com.knatola.GroceryApp.Networking;
 
-import android.os.AsyncTask;
+/*
+ * Created by knatola on 2.12.2017.
+ */
+
+import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.knatola.GroceryApp.Data_Models.GroceryItem;
-import com.knatola.GroceryApp.Data_Models.GroceryList;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-
-/**
- * Created by knatola on 2.12.2017.
- */
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class Client  {
 
     private static final String LOG = "CLIENT: ";
-    /*private static Retrofit retrofit = null;
-
-    public static Retrofit getClient(){
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.101:8080/")
-                .client(client)
-                .build();
-        return retrofit;
-    }*/
+    private static final AsyncHttpClient asyncClient = new AsyncHttpClient();
+    private static boolean returnType;
 
     public Client(){
-
     }
 
-    /*private static final String LOG = "CLIENT:";
-
-    private ArrayList<GroceryItem> groceryItems = new ArrayList<>();
-    private ArrayList<GroceryList> groceryLists = new ArrayList<>();
-
-    public ArrayList<GroceryList>getGroceryLists(Request req){
-       // ArrayList<GroceryList> lists = new ArrayList<>();
-
-
-
-        return this.groceryLists;
-    }
-
-    public ArrayList<GroceryItem> getGroceryList(Request req){
-        //ArrayList<GroceryItem> list = new ArrayList<>();
-
-        new Worker(req).execute();
-
-        return this.groceryItems;
-    }
-    public class Worker extends AsyncTask<Void, Void, Void >{
-
-        private Request request;
-
-        public Worker(Request req){
-            this.request = req;
-        }
-
-        public void setRequest(Request request) {
-            this.request = request;
-        }
-
-        public Request getRequest() {
-            return request;
-        }
-
-        @Override
-        protected Void doInBackground(Void...params) {
-            Request req = getRequest();
-            try {
-                URL url = new URL(req.getUrl());
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod(req.getType());
-                con.connect();
-
-                BufferedReader bf = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String jsonStr = (bf.readLine());
-                Log.d(LOG, jsonStr);
-
-                //code to create array
-                ArrayList<GroceryItem> theList = new ArrayList<>();
-
-                setGroceryItems(theList);
-            } catch (MalformedURLException e) {
-                Log.e(LOG, "URL PROBLEM");
-            } catch (IOException e) {
-                Log.e(LOG, "CONNECTION PROBLEM");
+    public static void getGroceryList(String url, RequestParams params, final String groceryListName,
+                                      final GetCallback<ArrayList<GroceryItem>> callback){
+        Log.d(LOG, "GET: " + url);
+        String finalUrl = url + groceryListName;
+        asyncClient.get(finalUrl, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                final ArrayList<GroceryItem> groceryList = new ArrayList<>();
+                Log.d(LOG, "onSuccess");
+                String responseString = new String (responseBody);
+                Log.d(LOG, responseString);
+                try {
+                    JSONArray array = null;
+                    try {
+                        array = new JSONArray(responseString);
+                        for (int i = 0; i <array.length(); i++){
+                            JSONObject jsonObject = array.getJSONObject(i);
+                            String id = jsonObject.getString("id");
+                            String name  = jsonObject.getString("name");
+                            String price = jsonObject.getString("price");
+                            String amount = jsonObject.getString("amount");
+                            GroceryItem item = new GroceryItem(name, price, amount, Integer.getInteger(id),
+                                    groceryListName);
+                            groceryList.add(item);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e(LOG, "JSON exception");
+                    }
+                }finally {
+                    Log.d(LOG, "success");
+                }
             }
-
-            return null;
-        }
-    }
-
-    public void setGroceryItems(ArrayList<GroceryItem> groceryItems) {
-        this.groceryItems = groceryItems;
-    }
-
-    public void setGroceryLists(ArrayList<GroceryList> groceryLists) {
-        this.groceryLists = groceryLists;
-    }*/
-
-    public ArrayList <GroceryItem> getGroceryList(Request request){
-        ArrayList<GroceryItem> items = new ArrayList<>();
-
-        try {
-            URL url = new URL(request.getUrl());
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod(request.getType());
-            con.setConnectTimeout(2000);
-            con.connect();
-
-            BufferedReader bf = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String jsonStr = (bf.readLine());
-            Log.d("network:", "IT WORKS:"+ jsonStr);
-
-            JSONArray jsonArray = new JSONArray(jsonStr);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String id = jsonObject.getString("id");
-                String name = jsonObject.getString("name");
-                String price = jsonObject.getString("price");
-                int amount = jsonObject.getInt("count");
-                String groceryListName = jsonObject.getString("groceryListName");
-                GroceryItem item = new GroceryItem(id, name, price, amount, groceryListName);
-                items.add(item);
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d(LOG, "GET Failed");
             }
-            bf.close();
-            con.disconnect();
+        });
+    }
+    /*todo
+    * authentication here
+    * */
+    public static boolean postGroceryList(String url, Context context, RequestParams params, ArrayList<GroceryItem> list){
+        Log.d(LOG, "TRYING POST");
+            Gson gson = new Gson();
+            String json = gson.toJson(list);
+            try{
+                StringEntity entity = new StringEntity(json);
+                entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                asyncClient.post(context, url, entity, "application/json", new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        Log.d(LOG, "POST SUCCESS");
+                        setReturnType(true);
+                    }
 
-        } catch (MalformedURLException e) {
-            Log.e(LOG, "Failure with URL");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e(LOG, "Failure with network");
-        } catch (JSONException e) {
-            Log.e(LOG, "JSON ERROR");
-        }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        Log.d(LOG,"POST FAILED");
+                        setReturnType(false);
+                    }
+                });
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                Log.d(LOG,"UnsupportedEncodingException");
+            }
+        return getReturnType();
+    }
 
-    return items;
+    public interface GetCallback<T>{
+        void onResponse(T response);
+    }
+
+    public static boolean getReturnType() {
+        return returnType;
+    }
+
+    public static void setReturnType(boolean returnType) {
+        Client.returnType = returnType;
     }
 }
