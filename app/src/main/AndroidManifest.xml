@@ -46,6 +46,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Login Activity -->
+        <activity android:name="com.knatola.GroceryApp.Login.LoginActivity"
+            android:parentActivityName="com.knatola.GroceryApp.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/app_header"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.knatola.GroceryApp.MainActivity"/>
+
+            <intent-filter>
+                <action android:name="android.intent.action.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

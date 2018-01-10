@@ -2,15 +2,21 @@ package com.knatola.GroceryApp.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
+import com.knatola.GroceryApp.Data_Models.Account;
 import com.knatola.GroceryApp.Data_Models.GroceryItem;
 import com.knatola.GroceryApp.Data_Models.GroceryList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,12 +32,13 @@ import java.util.Set;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String LOG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String TAG ="Database";
 
-    public static final String DATABASE_NAME = "groceries.db";
-    public static final String TABLE_GROCERIES = "groceries";
-    public static final String TABLE_GROCERY_LIST= "grocery_list";
+    private static final String DATABASE_NAME = "groceries.db";
+    private static final String TABLE_GROCERIES = "groceries";
+    private static final String TABLE_GROCERY_LIST= "grocery_list";
+    private static final String TABLE_ACCOUNT = "account";
 
     //common column names
     private static final String KEY_ID = "id";
@@ -47,6 +54,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     //grocery_list table column names
     private static final String GROCERY_LIST_NAME = "grocery_list_name";
 
+    //account table column names
+    private static final String ACCOUNT_NAME = "account_name";
+    private static final String HASH_STRING = "hash_string";
+
+    //boolean for checking if there is an account in the db
+    private boolean isAccount = false;
+
 
     public DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,12 +71,15 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_GROCERIES);
         db.execSQL(CREATE_TABLE_GROCERY_LIST);
+        db.execSQL(CREATE_TABLE_ACCOUNT);
+        setIsAccount(false);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROCERIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROCERY_LIST);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT);
         onCreate(db);
     }
 
@@ -73,11 +90,58 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             + " TEXT," + GROCERY_PRICE + " TEXT," + GROCERY_ITEM_LIST_NAME + " TEXT," +  KEY_CREATED_AT
             + " DATETIME" + ");";
 
+    //grocerylist create statement
     private static final String CREATE_TABLE_GROCERY_LIST = "CREATE TABLE " + TABLE_GROCERY_LIST
             + "(" + KEY_ID + " INTEGER PRIMARY KEY," + GROCERY_LIST_NAME + " TEXT, " + KEY_CREATED_AT
             + " DATETIME" + ");";
 
+    //Account create statement
+    private static final String CREATE_TABLE_ACCOUNT = "CREATE TABLE " + TABLE_ACCOUNT
+            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ACCOUNT_NAME + " TEXT, "
+            + HASH_STRING + " TEXT, " + KEY_CREATED_AT + " DATETIME" + ");";
+
     // CRUD STATEMENTS
+
+    //Creating the account
+    public long createAccount(Account account){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ACCOUNT_NAME, account.getUserName());
+        values.put(HASH_STRING, account.getStringHash());
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        long account_id = db.insert(TABLE_ACCOUNT, null, values);
+        Log.d(TAG, account.getUserName() + " created");
+        setIsAccount(true);
+
+        return account_id;
+    }
+
+    //Destroying account
+    public void deleteAccount(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_ACCOUNT);
+        setIsAccount(false);
+    }
+
+    //return accountNames
+    public List<String> getAccountNames(){
+        List<String> names = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " + ACCOUNT_NAME + " FROM " + TABLE_ACCOUNT + ";";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+        if(c.moveToFirst()){
+            do {
+               names.add(c.getString(c.getColumnIndex(ACCOUNT_NAME)));
+            }while(c.moveToNext());
+        }
+        c.close();
+
+        return names;
+    }
+
     // Creating a grocery item method
     public long createGrocery(GroceryItem item){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -93,6 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         long grocery_id = db.insert(TABLE_GROCERIES, null, values);
 
         Log.d(TAG,item.getName() + " created");
+
 
         return grocery_id;
     }
@@ -161,6 +226,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         }
     }
 
+    public Account getAccount(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT *" + " FROM " + TABLE_ACCOUNT + ";";
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        Log.e(LOG, selectQuery);
+
+        if(c != null)
+            c.moveToFirst();
+        Account account = new Account();
+        try{
+            account.setUserName(c.getString(c.getColumnIndex(ACCOUNT_NAME)));
+            account.setStringHash(c.getString(c.getColumnIndex(HASH_STRING)));
+        }catch (CursorIndexOutOfBoundsException e){
+            return  null;
+        }
+
+        Log.d(LOG, "returning:" + account.getUserName());
+
+        return account;
+    }
+
     /*
     *Return all created grocery lists names, in a String []
     */
@@ -177,6 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 groceryListNames.add(c.getString(c.getColumnIndex(GROCERY_ITEM_LIST_NAME)));
             }while(c.moveToNext());
         }
+        c.close();
         //Remove duplicates by creating a Set from the ArrayList
         Set<String>uniqueNames = new HashSet<>(groceryListNames);
         ArrayList<String> returnList = new ArrayList<>();
@@ -237,10 +325,18 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     //helper method with time
     private String getDateTime(){
+
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
     }
 
+    public boolean getIsAccount() {
+        return isAccount;
+    }
+
+    private void setIsAccount(boolean isAccount) {
+        this.isAccount = isAccount;
+    }
 }

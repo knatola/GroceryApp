@@ -59,7 +59,6 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
         FloatingActionButton addToFridge = rootView.findViewById(R.id.addToFridge);
         db = new DatabaseHelper(getContext());
 
-
         mRemoveItemBtn = rootView.findViewById(R.id.removeItem);
         clickHere = rootView.findViewById(R.id.clickHere);
         fridgeLinear = rootView.findViewById(R.id.fridgeLinear);
@@ -69,7 +68,6 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
         editAmount = rootView.findViewById(R.id.addAmount);
         editPrice = rootView.findViewById(R.id.addPrice);
         listView = rootView.findViewById(R.id.fridgeList);
-
 
         //returning fridge items from db, adding them to adapter
         mLista = new ArrayList<>();

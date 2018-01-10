@@ -3,6 +3,7 @@ package com.knatola.GroceryApp;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -20,23 +21,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.knatola.GroceryApp.Data_Models.Account;
 import com.knatola.GroceryApp.Data_Models.GroceryItem;
 import com.knatola.GroceryApp.Database.DatabaseHelper;
 import com.knatola.GroceryApp.Fridge.FridgeViewFragment;
 import com.knatola.GroceryApp.Data_Models.GroceryList;
 import com.knatola.GroceryApp.Groceries.GroceryListView;
+import com.knatola.GroceryApp.Login.LoginActivity;
 import com.knatola.GroceryApp.Networking.Client;
-import com.knatola.GroceryApp.Networking.Request;
-import com.knatola.GroceryApp.Networking.RestService;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> mListNames = new ArrayList<>();
     Client client;
     ArrayList<GroceryItem> testiLista = new ArrayList<>();
+    private Account account;
+    private boolean isLoggedIn = false;
 
     @Override
     protected void onStart() {
         super.onStart();
         client = new Client();
-
     }
 
     @Override
@@ -72,7 +70,50 @@ public class MainActivity extends AppCompatActivity {
                 R.string.close);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        NavigationView mNav = (NavigationView) findViewById(R.id.navigation_view);
+        View v = mNav.getHeaderView(0);
+        TextView mNavHeader = (TextView) v.findViewById(R.id.nav_header1);
         setSupportActionBar(mToolbar);
+        View mLoginButton = findViewById(R.id.nav_login);
+        View mLogoutButton = findViewById(R.id.nav_logout);
+        Button mSettingsBtn = (Button) findViewById(R.id.nav_settings);
+        mLogoutButton.setVisibility(View.GONE);
+        Bundle b = getIntent().getExtras();
+        if(b != null){
+            Log.d(LOG, "login_status: " + isLoggedIn);
+            setLoggedIn(b.getBoolean("login_status"));
+            if(isLoggedIn){
+                mLogoutButton.setVisibility(View.VISIBLE);
+                mLoginButton.setVisibility(View.GONE);
+                mNavHeader.setText(db.getAccount().getUserName());
+            }
+        }
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
+
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent logout = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(logout);
+            }
+        });
+
+        mSettingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                settingsIntent.putExtra("login_status", isLoggedIn());
+                startActivity(settingsIntent);
+            }
+        });
+
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
@@ -163,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }else if(id == R.id.action_settings){
             SettingsActivity settings = new SettingsActivity();
             Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            settingsIntent.putExtra("login_status", isLoggedIn());
             startActivity(settingsIntent);
         }
         return super.onOptionsItemSelected(item);
@@ -229,8 +271,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(a);
         }
     }
+
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         getDelegate().setSupportActionBar(toolbar);
         getDelegate().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 }

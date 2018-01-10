@@ -22,4 +22,15 @@
     <string name="nothing_here">There is nothing here yet.</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="login_header1">Login or create an Account</string>
+    <string name="login_header2">Create an Account</string>
+    <string name="login_button">Login</string>
+    <string name="logout_button">Logout</string>
+    <string name="create_button">Create account</string>
+    <string name="name_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="password_hint2">Retype Password</string>
+    <string name="cloud_button">Cloud</string>
+
+
 </resources>

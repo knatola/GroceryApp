@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class GroceryListView extends Fragment implements CustomAdapter.OnCheckChangeListener {
 
-    private static final String LOG = "GroceryListView fragment";
+    private static final String LOG = "GroceryListView:";
     GroceryListsAdapter listsAdapter;
     private ArrayList<GroceryList> groceryLists;
     private ListView groceryListsView;
