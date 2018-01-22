@@ -16,7 +16,7 @@ import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by knatola on 7.10.2017.
  */
 

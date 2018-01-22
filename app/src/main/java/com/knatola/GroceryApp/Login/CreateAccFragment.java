@@ -21,7 +21,6 @@ import com.knatola.GroceryApp.R;
  * Created by Juho on 9.1.2018.
  */
 
-//todo create account
 public class CreateAccFragment extends Fragment {
     View rootView;
     private static final String LOG = "CreateAccFragment: ";
@@ -56,7 +55,7 @@ public class CreateAccFragment extends Fragment {
 
                         LoginFragment login = new LoginFragment();
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.login_container, login);
+                        transaction.replace(R.id.login_container, login, "login");
                         transaction.remove(CreateAccFragment.this);
                         transaction.commit();
                     }else{

@@ -43,7 +43,7 @@ public class LoginFragment extends Fragment {
                 Log.d(LOG, "CreateAccBtn Click");
                 CreateAccFragment accFragment = new CreateAccFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.login_container, accFragment);
+                transaction.replace(R.id.login_container, accFragment, "create");
                 transaction.remove(LoginFragment.this);
                 transaction.commit();
             }

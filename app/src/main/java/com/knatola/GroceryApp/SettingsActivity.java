@@ -2,6 +2,7 @@ package com.knatola.GroceryApp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,6 +21,11 @@ public class SettingsActivity extends AppCompatActivity{
         Switch mSwitch = (Switch) findViewById(R.id.settings_switch1);
         TextView mSuggestion = (TextView) findViewById(R.id.login_suggestion);
         TextView mCloudText = (TextView) findViewById(R.id.cloudTxt);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Bundle b = getIntent().getExtras();
         if(b != null){
             mLoginStatus = b.getBoolean("login_status");
