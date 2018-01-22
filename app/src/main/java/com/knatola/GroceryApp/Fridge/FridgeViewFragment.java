@@ -24,7 +24,7 @@ import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by knatola on 11.10.2017.
  */
 
@@ -192,7 +192,7 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
     //helper class to communicate with list adapter through interface
     public class UndoListener implements View.OnClickListener{
         GroceryItem item;
-        public UndoListener(GroceryItem item){
+        UndoListener(GroceryItem item){
             this.item = item;
         }
 
@@ -202,5 +202,11 @@ public class FridgeViewFragment extends Fragment implements CustomAdapter.OnChec
             mLista.remove(item);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        db.closeDB();
     }
 }

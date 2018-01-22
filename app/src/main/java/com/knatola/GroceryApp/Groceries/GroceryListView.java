@@ -20,7 +20,7 @@ import com.knatola.GroceryApp.R;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by knatola on 11.10.2017.
  */
 
@@ -45,9 +45,7 @@ public class GroceryListView extends Fragment implements CustomAdapter.OnCheckCh
         View rootView = inflater.inflate(R.layout.grocerylists_view, container, false);
         setHasOptionsMenu(true);
         db = new DatabaseHelper(getContext());
-        Bundle bundle = new Bundle();
         mRemoveButton = rootView.findViewById(R.id.removeList);
-
 
         //Returning all the groceryListNames from db, assigning them to ArrayList
         ArrayList<String> stringNames = db.getAllGroceryListNames();
@@ -98,8 +96,6 @@ public class GroceryListView extends Fragment implements CustomAdapter.OnCheckCh
                                 db.closeDB();
                                 groceryLists.remove(i);
                                 listsAdapter.notifyDataSetChanged();
-
-                                continue;
                             }
                         }
                     }

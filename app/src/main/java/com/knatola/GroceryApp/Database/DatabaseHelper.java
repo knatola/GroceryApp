@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-/**
+/*
  * Created by knatola on 24.10.2017.
+ * Databasehelper for the SQLite relational database.
  */
 
 
@@ -100,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ACCOUNT_NAME + " TEXT, "
             + HASH_STRING + " TEXT, " + KEY_CREATED_AT + " DATETIME" + ");";
 
-    // CRUD STATEMENTS
+    // CRUD STATEMENTS:
 
     //Creating the account
     public long createAccount(Account account){

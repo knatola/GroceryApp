@@ -20,7 +20,7 @@ import com.knatola.GroceryApp.MainActivity;
 import com.knatola.GroceryApp.R;
 import com.knatola.GroceryApp.SettingsActivity;
 
-/**
+/*
  * Created by Juho on 9.1.2018.
  */
 
@@ -28,15 +28,15 @@ public class LoginFragment extends Fragment {
     View rootView;
     private static final String LOG = "LOGINFRAGMENT:";
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.login_frag_layout, container, false);
         final EditText mNameEdit = rootView.findViewById(R.id.loginName_edit);
         final EditText mPasswordEdit = rootView.findViewById(R.id.loginPassword_edit);
-        final DatabaseHelper db = new DatabaseHelper(getContext());
         final Button mCreateAccBtn = rootView.findViewById(R.id.createAccBtn);
+        final DatabaseHelper db = new DatabaseHelper(getContext());
+
         mCreateAccBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,6 +50,10 @@ public class LoginFragment extends Fragment {
         });
 
         Button mLoginBtn =  rootView.findViewById(R.id.loginButton);
+
+        /*
+        Check that account is created and that the given username and password match.
+         */
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +98,7 @@ public class LoginFragment extends Fragment {
                     });
                     builder.show();
                 }
+                db.closeDB();
             }
         });
         return rootView;

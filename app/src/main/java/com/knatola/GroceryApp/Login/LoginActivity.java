@@ -18,11 +18,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity_layout);
 
-        //Init container with a loginFragment
+        //Init Fragment container with a loginFragment
         LoginFragment loginFragment = new LoginFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.login_container, loginFragment);
         transaction.commit();
     }
-
 }

@@ -2,8 +2,9 @@ package com.knatola.GroceryApp;
 
 import java.util.Random;
 
-/**
+/*
  * Created by knatola on 31.10.2017.
+ * Simple helper Class to randomly choose an image from the resource files.
  */
 
 public class ImageChooser {

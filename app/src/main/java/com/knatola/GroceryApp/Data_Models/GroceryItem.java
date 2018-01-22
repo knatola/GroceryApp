@@ -12,7 +12,6 @@ public class GroceryItem {
     private String price = "";
     private String amount = "";
     private boolean isChecked;
-    private GroceryList list;
     private int id;
     private String groceryListName;
 
@@ -50,10 +49,6 @@ public class GroceryItem {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setGroceryListName(String groceryListName) {
-        this.groceryListName = groceryListName;
     }
 
     public String getGroceryListName(){ return groceryListName;}

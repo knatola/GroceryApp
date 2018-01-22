@@ -40,18 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String STR_URL = "http://192.168.0.100:8080/";
     private static final String LOG = "MainActivity:";
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private ArrayList<GroceryList> groceryLists;
     DatabaseHelper db;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
-    RestService service;
     ArrayList<String> mListNames = new ArrayList<>();
     Client client;
-    ArrayList<GroceryItem> testiLista = new ArrayList<>();
-    private Account account;
     private boolean isLoggedIn = false;
 
     @Override
@@ -139,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -171,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem saveList =  menu.findItem(R.id.action_save);
         MenuItem value = menu.findItem(R.id.action_value);
@@ -191,11 +186,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_value) {
             View parentLayout = findViewById(R.id.main_content);
             Snackbar snackbar = Snackbar.make(parentLayout,"Fridges total value: " + String.format("%.2f", db.getGroceryListPrice("fridge")),
@@ -275,14 +267,6 @@ public class MainActivity extends AppCompatActivity {
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         getDelegate().setSupportActionBar(toolbar);
         getDelegate().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public boolean isLoggedIn() {

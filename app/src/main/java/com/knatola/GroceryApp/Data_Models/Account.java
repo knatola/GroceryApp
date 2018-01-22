@@ -3,6 +3,8 @@ package com.knatola.GroceryApp.Data_Models;
 
 /*
  * Created by Juho on 9.1.2018.
+ * Java Pojo class for the user account.
+ * Accounts are identified with a SHA-256 token.
  */
 
 import java.nio.charset.StandardCharsets;
@@ -10,14 +12,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Account {
-    String userName;
-    byte[] hash;
-    String stringHash;
+    private String userName;
+    private String stringHash;
 
     public Account(String userName, String password){
         this.userName = userName;
         this.stringHash = createHash(userName, password);
     }
+
     public Account(){}
 
     public String createHash(String userName, String password){
